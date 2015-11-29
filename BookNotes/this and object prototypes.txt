@@ -1,0 +1,1252 @@
+
+page 9
+======
+We said earlier that this is not an author-time binding but a runtime
+binding. It is contextual based on the conditions of the function’s invocation.
+this binding has nothing to do with where a function is
+declared, but has instead everything to do with the manner in which
+the function is called.
+When a function is invoked, an activation record, otherwise known
+as an execution context, is created. This record contains information
+about where the function was called from (the call-stack), how the
+function was invoked, what parameters were passed, etc. One of the
+properties of this record is the this reference, which will be used for
+the duration of that function’s execution.
+In the next chapter, we will learn to find a function’s call-site to determine
+how its execution will bind this.
+=====================================
+page 9
+=========
+To learn this, you first have to learn what this is not, despite any
+assumptions or misconceptions that may lead you down those paths.
+this is neither a reference to the function itself, nor is it a reference
+to the function’s lexical scope.
+this is actually a binding that is made when a function is invoked, and
+what it references is determined entirely by the call-site where the
+function is called.
+======================
+page 11
+=======
+call-site: the
+location in code where a function is called (not where it’s declared).
+================
+PAGE 11-12
+==========
+The call-site we care about is in the invocation before the currently
+executing function.
+
+Let’s demonstrate the call-stack and call-site:
+
+function baz() {
+  // call-stack is: `baz`
+  // so, our call-site is in the global scope
+  console.log( "baz" );
+  bar(); // <-- call-site for `bar`
+}
+function bar() {
+  // call-stack is: `baz` -> `bar`
+  // so, our call-site is in `baz`
+  console.log( "bar" );
+  foo(); // <-- call-site for `foo`
+}
+function foo() {
+  // call-stack is: `baz` -> `bar` -> `foo`
+  // so, our call-site is in `bar`
+  console.log( "foo" );
+}
+baz(); // <-- call-site for `baz`
+
+====================================================
+page 13-14
+========
+If strict mode is in effect, the global object is not eligible for the
+default binding, so the this is instead set to undefined:
+...
+the strict mode state of the call-site of foo() is irrelevant:
+
+function foo() {
+  console.log( this.a );
+}
+
+var a = 2;
+
+(function(){
+  "use strict";
+  foo(); // 2
+})();
+==========================================
+page 15
+========
+When there is a
+context object for a function reference, the implicit binding rule says
+that it’s that object that should be used for the function call’s this
+binding.
+...
+Only the top/last level of an object property reference chain matters
+to the call-site.
+==================
+page 17-18
+======
+Explicit Binding
+With implicit binding, as we just saw, we had to mutate the object in
+question to include a reference on itself to the function, and use this
+property function reference to indirectly (implicitly) bind this to the
+object.
+....
+“All” functions in the language have some utilities available to them
+(via their [[Prototype]]—more on that later), which can be useful
+for this task. Specifically, functions have call(..) and apply(..)
+methods.
+...
+Since you are directly stating what you want the this
+to be, we call it explicit binding.
+Consider:
+function foo() {
+  console.log( this.a );
+}
+var obj = {
+  a: 2
+};
+foo.call( obj ); // 2
+
+Invoking foo with explicit binding by foo.call(..) allows us to force
+its this to be obj.
+=========================
+page 30-31
+==========
+'Soft' Bind:
+if (!Function.prototype.softBind) {
+	Function.prototype.softBind = function(obj) {
+		var fn = this,
+			curried = [].slice.call( arguments, 1 ),
+			bound = function bound() {
+				return fn.apply(
+					(!this ||
+						(typeof window !== "undefined" &&
+							this === window) ||
+						(typeof global !== "undefined" &&
+							this === global)
+					) ? obj : this,
+					curried.concat.apply( curried, arguments )
+				);
+			};
+		bound.prototype = Object.create( fn.prototype );
+		return bound;
+	};
+}
+The softBind(..) utility provided here works similarly to the builtin
+ES5 bind(..) utility, except with our soft binding behavior. It wraps
+the specified function in logic that checks the this at call-time and if
+it’s global or undefined, uses a prespecified alternate default (obj).
+Otherwise the this is left untouched. It also provides optional currying
+(see the bind(..) discussion earlier).
+Let’s demonstrate its usage:
+
+function foo() {
+  console.log("name: " + this.name);
+}
+
+var obj = { name: "obj" },
+obj2 = { name: "obj2" },
+obj3 = { name: "obj3" };
+var fooOBJ = foo.softBind( obj );
+fooOBJ(); // name: obj
+obj2.foo = foo.softBind(obj);
+obj2.foo(); // name: obj2 <---- look!!!
+fooOBJ.call( obj3 ); // name: obj3 <---- look!
+setTimeout( obj2.foo, 10 );
+// name: obj <---- falls back to soft-binding
+
+The soft-bound version of the foo() function can be manually thisbound
+to obj2 or obj3 as shown, but it falls back to obj if the default
+binding would otherwise apply.
+================================================
+page 33-34
+=========
+Review
+Determining the this binding for an executing function requires
+finding the direct call-site of that function. Once examined, four rules
+can be applied to the call-site, in this order of precedence:
+1. Called with new? Use the newly constructed object.
+2. Called with call or apply (or bind)? Use the specified object.
+3. Called with a context object owning the call? Use that context
+object.
+4. Default: undefined in strict mode, global object otherwise.
+Be careful of accidental/unintentional invoking of the default binding
+rule. In cases where you want to “safely” ignore a this binding, a
+“DMZ” object like ø = Object.create(null) is a good placeholder
+value that protects the global object from unintended side effects.
+
+Instead of the four standard binding rules, ES6 arrow-functions use
+lexical scoping for this binding, which means they inherit the this
+binding (whatever it is) from its enclosing function call. They are essentially
+a syntactic replacement of self = this in pre-ES6 coding.
+=============================
+Arrow functions:
+================
+http://stackoverflow.com/questions/24900875/whats-the-meaning-of-in-javascript
+
+From the docs:
+(https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/arrow_functions)
+
+An arrow function expression has a shorter syntax compared to function expressions and
+lexically binds the this value. Arrow functions are always anonymous.
+
+Example (also from the docs):
+
+var a = [
+  "We're up all night 'til the sun",
+  "We're up all night to get some",
+  "We're up all night for good fun",
+  "We're up all night to get lucky"
+];
+
+var a2 = a.map(function(s){ return s.length });
+
+var a3 = a.map( s => s.length );
+==========================================
+page 38
+========
+null and undefined have no object wrapper form, only their primitive
+values. By contrast, Date values can only be created with their constructed
+object form, as they have no literal form counterpart.
+======================
+page 39
+=======
+Contents
+As mentioned earlier, the contents of an object consist of values (any
+type) stored at specifically named locations, which we call properties.
+It’s important to note that while we say “contents,” which implies that
+these values are actually stored inside the object, that’s merely an appearance.
+The engine stores values in implementation-dependent
+ways, and may very well not store them in some object container. What
+is stored in the container are these property names, which act as pointers
+(technically, references) to where the values are stored.
+===========================
+page 40
+=========
+Computed Property Names
+The myObject[..] property access syntax we just described is useful
+if you need to use a computed expression value as the key name, like
+myObject[prefix + name]. But that’s not really helpful when declaring
+objects using the object-literal syntax.
+ES6 adds computed property names, where you can specify an expression,
+surrounded by a [ ] pair, in the key-name position of an objectliteral
+declaration:
+
+var prefix = "foo";
+
+var myObject = {
+  [prefix + "bar"]: "hello",
+  [prefix + "baz"]: "world"
+};
+
+myObject["foobar"]; // hello
+myObject["foobaz"]; // world
+
+The most common usage of computed property names will probably
+be for ES6 Symbols, which we will not be covering in detail in this book.
+===================================
+page 43
+=======
+Be careful: if you try to add a property to an array, but the property
+name looks like a number, it will end up instead as a numeric index
+(thus modifying the array contents):
+
+var myArray = [ "foo", 42, "bar" ];
+myArray["3"] = "baz";
+myArray.length; // 4
+myArray[3]; // "baz"
+=======================================
+page 44-45
+==========
+Duplicating Objects
+One of the most commonly requested features when developers newly
+take up the JavaScript language is how to duplicate an object.
+...
+One subset solution is that objects that are JSON-safe (that is, can be
+serialized to a JSON string and then reparsed to an object with the
+same structure and values) can easily be duplicated with:
+
+var newObj = JSON.parse( JSON.stringify( someObj ) );
+
+Of course, that requires you to ensure your object is JSON-safe. For
+some situations, that’s trivial. For others, it’s insufficient.
+
+At the same time, a shallow copy is fairly understandable and has far
+fewer issues, so ES6 has now defined Object.assign(..) for this task.
+
+Object.assign(..) takes a target object as its first parameter, and one
+or more source objects as its subsequent parameters. It iterates over all
+the enumerable (see the following code), owned keys (immediately
+present) on the source object(s) and copies them (via = assignment
+only) to the target. It also, helpfully, returns the target,
+...
+var newObj = Object.assign( {}, myObject );
+
+============================================
+page 47
+========
+Writable
+The ability for you to change the value of a property is controlled by
+writable.
+Consider:
+
+var myObject = {};
+Object.defineProperty( myObject, "a", {
+  value: 2,
+  writable: false, // not writable!
+  configurable: true,
+  enumerable: true
+} );
+
+myObject.a = 3;
+myObject.a; // 2
+
+========================
+page 48
+========
+Configurable
+As long as a property is currently configurable, we can modify its descriptor
+definition, using the same defineProperty(..) utility:
+....
+Be careful: as you can see, changing con
+figurable to false is a one-way action, and cannot be undone!
+......
+Another thing configurable:false prevents is the ability to use the
+delete operator to remove an existing property:
+===================================================
+page 50
+======
+
+Object constant
+
+By combining writable:false and configurable:false, you can
+essentially create a constant (cannot be changed, redefined, or deleted)
+as an object property, like:
+var myObject = {};
+Object.defineProperty( myObject, "FAVORITE_NUMBER", {
+value: 42,
+writable: false,
+configurable: false
+} );
+=================
+page 51
+==============
+
+Prevent extensions
+
+If you want to prevent an object from having new properties added to
+it, but otherwise leave the rest of the object’s properties alone, call
+Object.preventExtensions(..):
+====================
+mine
+======
+var myObj = { a:42 };
+undefined
+Object.preventExtensions(myObj)
+Object {a: 42}
+myObj.b = 45
+45
+myObj.b
+undefined
+======================
+page 51
+=======
+
+Seal
+
+Object.seal(..) creates a “sealed” object, which means it takes an
+existing object and essentially calls Object.preventExtensions(..)
+on it, but also marks all its existing properties as configurable:false.
+So, not only can you not add any more properties, but you also cannot
+reconfigure or delete any existing properties (though you can still
+modify their values).
+
+Freeze
+
+Object.freeze(..) creates a frozen object, which means it takes an
+existing object and essentially calls Object.seal(..) on it, but it also
+marks all “data accessor” properties as writable:false, so that their
+values cannot be changed.
+This approach is the highest level of immutability that you can attain
+for an object itself, as it prevents any changes to the object or to any
+of its direct properties (though, as mentioned earlier, the contents of
+any referenced other objects are unaffected).
+You could “deep freeze” an object by calling Object.freeze(..) on
+the object, and then recursively iterating over all objects it references
+(which would have been unaffected thus far), and calling Ob
+ject.freeze(..) on them as well. Be careful, though, as that could
+affect other (shared) objects you’re not intending to affect.
+======================================================================
+page 54
+========
+
+Getters and Setters
+
+When you define a property to have either a getter or a setter or both,
+its definition becomes an “accessor descriptor” (as opposed to a “data
+descriptor”). For accessor desciptors, the value and writable characteristics
+of the descriptor are moot and ignored, and instead JS considers
+the set and get characteristics of the property (as well as con
+figurable and enumerable).
+======================================
+page 55
+========
+Either through object-literal syntax with get a() { .. } or through
+explicit definition with defineProperty(..), in both cases we created
+a property on the object that actually doesn’t hold a value, but whose
+access automatically results in a hidden function call to the getter
+function, with whatever value it returns being the result of the property
+access:
+...
+You will almost certainly
+want to always declare both getter and setter (having only one or the
+other often leads to unexpected/surprising behavior):
+var myObject = {
+  // define a getter for `a`
+  get a() {
+  return this._a_;
+},
+
+// define a setter for `a`
+set a(val) {
+  this._a_ = val * 2;
+  }
+};
+
+myObject.a = 2;
+myObject.a; // 4
+============================================
+page 56
+=========
+We can ask an object if it has a certain property without asking to get
+that property’s value:
+
+var myObject = {
+  a: 2
+};
+
+("a" in myObject); // true
+("b" in myObject); // false
+
+myObject.hasOwnProperty( "a" ); // true
+myObject.hasOwnProperty( "b" ); // false
+
+The in operator will check to see if the property is in the object, or if
+it exists at any higher level of the [[Prototype]] chain object traversal
+(see Chapter 5). By contrast, hasOwnProperty(..) checks to see if only
+myObject has the property or not, and will not consult the [[Proto
+type]] chain.
+=================================
+page 56
+=======
+hasOwnProperty(..) is accessible for all normal objects via delegation
+to Object.prototype (see Chapter 5). But it’s possible to create an
+object that does not link to Object.prototype (via Object.cre
+ate(null)—see Chapter 5). In this case, a method call like myOb
+ject.hasOwnProperty(..) would fail.
+In that scenario, a more robust way of performing such a check is
+Object.prototype.hasOwnProperty.call(myObject,"a"), which
+borrows the base hasOwnProperty(..) method and uses explicit binding
+(see Chapter 2) to apply it against our myObject.
+=====================================================
+page 57
+======
+It appears that the in operator will check for the existence of a
+value inside a container, but it actually checks for the existence
+of a property name. This difference is important to note
+with respect to arrays, as the temptation to try a check like 4
+in [2, 4, 6] is strong, but this will not behave as expected.
+
+mine
+======
+var myArray = [2,4,6]
+undefined
+
+"0" in myArray
+true
+1 in myArray
+true
+"2" in myArray
+true
+"3" in myArray
+false
+4 in myArray
+false
+=============================
+page 58
+=======
+for..in loops applied to arrays can give somewhat unexpected
+results, in that the enumeration of an array will include not
+only all the numeric indices, but also any enumerable properties.
+It’s a good idea to use for..in loops only on objects, and
+traditional for loops with numeric index iteration for arrays.
+
+mine
+======
+var myArray = [2,4,6]
+undefined
+myArray.pipe = "rope"
+"rope"
+myArray.p2p = "p3p"
+"p3p"
+
+for(var k in myArray) { console.log(k , myArray[k] ); }
+0 2
+1 4
+2 6
+pipe rope
+p2p p3p
+======================================
+page 58
+======
+Consider another way that enumerable and nonenumerable properties
+can be distinguished:
+
+var myObject = { };
+
+Object.defineProperty(
+  myObject,
+  "a",
+  // make `a` enumerable, as normal
+  { enumerable: true, value: 2 }
+);
+
+Object.defineProperty(
+  myObject,
+  "b",
+  // make `b` nonenumerable
+  { enumerable: false, value: 3 }
+);
+
+myObject.propertyIsEnumerable( "a" ); // true
+myObject.propertyIsEnumerable( "b" ); // false
+
+Object.keys( myObject ); // ["a"]
+Object.getOwnPropertyNames( myObject ); // ["a", "b"]
+
+propertyIsEnumerable(..) tests whether the given property name
+exists directly on the object and is also enumerable:true.
+
+Object.keys(..) returns an array of all enumerable properties,
+
+whereas Object.getOwnPropertyNames(..) returns an array of all
+properties, enumerable or not.
+
+Whereas in versus hasOwnProperty(..) differ in whether they consult
+the [[Prototype]] chain or not, Object.keys(..) and Ob
+ject.getOwnPropertyNames(..) both inspect only the direct object
+specified.
+
+====================================
+page 59
+=========
+ES5 also added several iteration helpers for arrays, including
+forEach(..), every(..), and some(..). Each of these helpers accepts
+a function callback to apply to each element in the array, differing only
+in how they respectively respond to a return value from the callback.
+forEach(..) will iterate over all values in the array, and it ignores any
+callback return values. every(..) keeps going until the end or the
+callback returns a false (or “falsy”) value, whereas some(..) keeps
+going until the end or the callback returns a true (or “truthy”) value.
+These special return values inside every(..) and some(..) act somewhat
+like a break statement inside a normal for loop, in that they stop
+the iteration early before it reaches the end.
+==============
+page 59-60
+============
+Iteration
+The for..in loop iterates over the list of enumerable properties on an
+object (including its [[Prototype]] chain). But what if you instead
+want to iterate over the values?
+....
+Helpfully, ES6 adds a for..of
+loop syntax for iterating over arrays (and objects, if the object defines
+its own custom iterator):
+
+var myArray = [ 1, 2, 3 ];
+
+for (var v of myArray) {
+  console.log( v );
+}
+
+// 1
+// 2
+// 3
+The for..of loop asks for an iterator object (from a default internal
+function known as @@iterator in spec-speak) of the thing to be iterated,
+and the loop then iterates over the successive return values from
+calling that iterator object’s next() method, once for each loop
+iteration.
+...
+
+Arrays have a built-in @@iterator, so for..of works easily on them,
+as shown. But let’s manually iterate the array, using the built-in @@iter
+ator, to see how it works:
+
+var myArray = [ 1, 2, 3 ];
+
+var it = myArray[Symbol.iterator]();
+
+it.next(); // { value:1, done:false }
+it.next(); // { value:2, done:false }
+it.next(); // { value:3, done:false }
+it.next(); // { done:true }
+
+================
+page 60
+========
+As contrasted with iterating over an array’s indices in a numerically
+ordered way (for loop or other iterators), the order
+of iteration over an object’s properties is not guaranteed and
+may vary between different JS engines. Do not rely on any
+observed ordering for anything that requires consistency
+among environments, as any observed agreement is unreliable.
+===============================================
+page 63
+========
+
+[ ES6 Iterators: ]
+
+In fact, you can even define “infinite” iterators that never “finish” and
+always return a new value (such as a random number, an incremented
+value, a unique identifier, etc.), though you probably will not use such
+iterators with an unbounded for..of loop, as it would never end and
+would hang your program:
+
+var randoms = {
+  [Symbol.iterator]: function() {
+    return {
+      next: function() {
+        return { value: Math.random() };
+      }
+    };
+  }
+};
+
+var randoms_pool = [];
+
+for (var n of randoms) {
+  randoms_pool.push( n );
+  // don't proceed unbounded!
+  if (randoms_pool.length === 100) break;
+}
+
+This iterator will generate random numbers “forever,” so we’re careful
+to only pull out 100 values so our program doesn’t hang.
+====================
+page 63-64
+==========
+Review
+
+Objects in JS have both a literal form (such as var a = { .. }) and
+a constructed form (such as var a = new Array(..)). The literal form
+is almost always preferred, but the constructed form offers, in some
+cases, more creation options.
+
+Many people mistakenly claim “everything in JavaScript is an object,”
+but this is incorrect. Objects are one of the six (or seven, depending
+on your perspective) primitive types. Objects have subtypes, including
+function, and also can be behavior-specialized, like [object Ar
+ray] as the internal label representing the array object subtype.
+
+Objects are collections of key/value pairs. The values can be accessed
+as properties, via the .propName or ["propName"] syntax. Whenever
+a property is accessed, the engine actually invokes the internal default
+[[Get]] operation (and [[Put]] for setting values), which not only
+looks for the property directly on the object, but will traverse the
+[[Prototype]] chain (see Chapter 5) if not found.
+
+Properties have certain characteristics that can be controlled through
+property descriptors, such as writable and configurable. In addition,
+objects can have their mutability (and that of their properties)
+controlled to various levels of immutability using Object.preventEx
+tensions(..), Object.seal(..), and Object.freeze(..).
+
+Properties don’t have to contain values—they can be “accessor properties”
+as well, with getters/setters. They can also be either enumerable
+or not, which controls whether they show up in for..in loop iterations,
+for instance.
+
+You can also iterate over the values in data structures (arrays, objects,
+etc.) using the ES6 for..of syntax, which looks for either a built-in
+or custom @@iterator object consisting of a next() method to advance
+through the data values one at a time.
+
+===================
+page 84
+=======
+
+Review
+
+Classes are a design pattern. Many languages provide syntax that enables
+natural class-oriented software design. JS also has a similar
+syntax, but it behaves very differently from what you’re used to with
+classes in those other languages.
+
+Classes mean copies.
+
+When traditional classes are instantiated, a copy of behavior from class
+to instance occurs. When classes are inherited, a copy of behavior from
+parent to child also occurs.
+
+Polymorphism (having different functions at multiple levels of an inheritance
+chain with the same name) may seem like it implies a referential
+relative link from child back to parent, but it’s still just a result
+of copy behavior.
+
+JavaScript does not automatically create copies (as classes imply) between
+objects.
+
+The mixin pattern (both explicit and implicit) is often used to sort of
+emulate class copy behavior, but this usually leads to ugly and brittle
+syntax like explicit pseudopolymorphism (OtherObj.method
+Name.call(this, ...)), which often results in code that is harder to
+understand and maintain.
+
+Explicit mixins are also not exactly the same as class-copy behavior,
+since objects (and functions!) only have shared references duplicated,
+not the objects/functions themselves. Not paying attention to such
+nuance is the source of a variety of gotchas.
+
+In general, faking classes in JS often sets more landmines for future
+coding than solving present real problems.
+
+=================================================
+page 89
+=======
+
+The presence of a read-only property prevents a property of the same name
+from being implicitly created (shadowed) at a lower level of a
+[[Prototype]] chain.
+
+The reason for this restriction is primarily
+to reinforce the illusion of class-inherited properties. If
+you think of the foo at a higher level of the chain as having
+been inherited (copied down) to myObject, then it makes sense
+to enforce the nonwritable nature of that foo property on my
+Object. If you however separate the illusion from the fact, and
+recognize that no such inheritance copying actually occured
+(see Chapters 4 and 5), it’s a little unnatural that myObject
+would be prevented from having a foo property just because
+some other object had a nonwritable foo on it. It’s even stranger
+that this restriction only applies to = assignment, but is not
+enforced when using Object.defineProperty(..).
+======================================================
+
+page 91
+========
+In JavaScript, classes can’t (being that they don’t exist!) describe what
+an object can do. The object defines its own behavior directly. There’s
+just the object.
+=====================
+page 91-92
+=======
+The most direct way to explain it is that each object created from calling
+new Foo() (see Chapter 2) will end up (somewhat arbitrarily)
+[[Prototype]]-linked to this “Foo dot prototype” object.
+Let’s illustrate:
+
+function Foo() {
+// ...
+}
+
+var a = new Foo();
+Object.getPrototypeOf( a ) === Foo.prototype; // true
+
+When a is created by calling new Foo(), one of the things that happens
+(see Chapter 2 for all four steps) is that a gets an internal [[Proto
+type]] link to the object that Foo.prototype is pointing at.
+
+In class-oriented languages, multiple copies (aka instances) of a class
+can be made, like stamping something out from a mold. As we saw in
+Chapter 4, this happens because the process of instantiating (or inheriting
+from) a class means, “copy the behavior plan from that class
+into a physical object,” and this is done again for each new instance.
+But in JavaScript, there are no such copy actions performed. You don’t
+create multiple instances of a class. You can create multiple objects that
+are [[Prototype]]-linked to a common object. But by default, no
+copying occurs, and thus these objects don’t end up totally separate
+and disconnected from each other, but rather, quite linked.
+========================================================
+page 92
+========
+In JavaScript, we don’t make copies from one object (“class”) to another
+(“instance”). We make links between objects. For the [[Prototype]]
+mechanism, visually, the arrows move from right to left, and from
+bottom to top:
+================
+page 93
+=======
+Because of the confusion and conflation of terms, I believe the label
+“prototypal inheritance” itself (and trying to misapply all its associated
+class-orientation terminology, like “class,” “constructor,” “instance,”
+“polymorphism,” etc.) has done more harm than good in explaining
+how JavaScript’s mechanism really works.
+===========================================
+page 96
+=======
+Functions themselves are not constructors. However,
+when you put the new keyword in front of a normal function call, that
+makes that function call a “constructor call.” In fact, new sort of hijacks
+any normal function and calls it in a fashion that constructs an object,
+in addition to whatever else it was going to do.
+For example:
+
+function NothingSpecial() {
+  console.log( "Don't mind me!" );
+}
+var a = new NothingSpecial();
+// "Don't mind me!"
+a; // {}
+
+NothingSpecial is just a plain old normal function, but when called
+with new, it constructs an object, almost as a side effect, which we happen
+to assign to a. The call was a constructor call, but NothingSpe
+cial is not, in and of itself, a constructor.
+
+In other words, in JavaScript, it’s most appropriate to say that a “constructor”
+is any function called with the new keyword in front of it.
+Functions aren’t constructors, but function calls are “constructor calls”
+if and only if new is used.
+===================================
+page 99
+========
+The fact is, .constructor on an object arbitrarily points, by default,
+at a function that, reciprocally, has a reference back to the object—a
+reference that it calls .prototype. The words “constructor” and “prototype”
+only have a loose default meaning that might or might not hold
+true later. The best thing to do is remind yourself that “constructor
+does not mean constructed by.”
+.constructor is not a magic immutable property. It is nonenumerable
+(see previous snippet), but its value is writable (can be changed), and
+moreover, you can add or overwrite (intentionally or accidentally) a
+property of the name constructor on any object in any [[Proto
+type]] chain, with any value you see fit.
+============================
+page 101-103
+========
+
+Bar.prototype = Object.create( Foo.prototype );
+
+The important part is Bar.prototype = Object.create( Foo.pro
+totype ).
+
+The call to Object.create(..) creates a “new” object out
+of thin air, and links that new object’s internal [[Prototype]] to the
+object you specify (Foo.prototype in this case).
+
+In other words, that line says: “make a new Bar dot prototype object
+that’s linked to Foo dot prototype.”
+
+When function Bar() { .. } is declared, Bar, like any other function,
+has a .prototype link to its default object. But that object is not
+
+linked to Foo.prototype like we want. So, we create a new object that
+is linked as we want, effectively throwing away the original incorrectly
+linked object.
+
+A common misconception here is that either of the following approaches
+would also work, but they do not work as you’d expect:
+
+// doesn't work like you want!
+Bar.prototype = Foo.prototype;
+
+// works kinda like you want, but with
+// side effects you probably don't want :(
+Bar.prototype = new Foo();
+
+Bar.prototype = Foo.prototype doesn’t create a new object for
+Bar.prototype to be linked to. It just makes Bar.prototype another
+reference to Foo.prototype, which effectively links Bar directly to the
+same object to which Foo links: Foo.prototype. This means when you
+start assigning, like Bar.prototype.myLabel = ..., you’re modifying
+not a separate object but the shared Foo.prototype object itself, which
+would affect any objects linked to Foo.prototype. This is almost certainly
+not what you want. If it is what you want, then you likely don’t
+need Bar at all, and should just use only Foo and make your code
+simpler.
+
+Bar.prototype = new Foo() does in fact create a new object that is
+duly linked to Foo.prototype as we’d want. But, it used the Foo(..)
+“constructor call” to do it. If that function has any side effects (such as
+logging, changing state, registering against other objects, adding data
+properties to this, etc.), those side effects happen at the time of this
+linking (and likely against the wrong object!), rather than only when
+the eventual Bar() “descendents” are created, as would likely be
+expected.
+
+So, we’re left with using Object.create(..) to make a new object
+that’s properly linked, but without having the side effects of calling
+Foo(..). The slight downside is that we have to create a new object,
+throwing the old one away, instead of modifying the existing default
+object we’re provided.
+
+It would be nice if there was a standard and reliable way to modify the
+linkage of an existing object. Prior to ES6, there’s a nonstandard and
+not fully cross-browser way, via the .__proto__ property, which is
+settable. ES6 adds a Object.setPrototypeOf(..) helper utility, which
+does the trick in a standard and predictable way.
+
+Compare the pre-ES6 and ES6-standardized techniques for linking
+Bar.prototype to Foo.prototype, side by side:
+
+// pre-ES6
+// throws away default existing `Bar.prototype`
+Bar.prototype = Object.create( Foo.prototype );
+
+// ES6+
+// modifies existing `Bar.prototype`
+Object.setPrototypeOf( Bar.prototype, Foo.prototype );
+
+Ignoring the slight performance disadvantage (throwing away an object
+that’s later garbage-collected) of the Object.create(..) approach,
+it’s a little bit shorter and may be perhaps a little easier to read
+than the ES6+ approach. But it’s probably a syntactic wash either way.
+===============================================
+page 103-106
+=========
+
+Inspecting “Class” Relationships
+
+What if you have an object like a and want to find out what object (if
+any) it delegates to? Inspecting an instance (just an object in JS) for its
+inheritance ancestry (delegation linkage in JS) is often called introspection
+(or reflection) in traditional class-oriented environments.
+Consider:
+
+function Foo() {
+  // ...
+}
+
+Foo.prototype.blah = ...;
+
+var a = new Foo();
+
+How do we then introspect a to find out its “ancestry” (delegation
+linkage)? The first approach embraces the “class” confusion:
+
+a instanceof Foo; // true
+
+The instanceof operator takes a plain object as its lefthand operand
+and a function as its righthand operand. The question instanceof
+answers is: in the entire [[Prototype]] chain of a, does the object
+arbitrarily pointed to by Foo.prototype ever appear?
+...
+
+The second, and much cleaner, approach to [[Prototype]] reflection
+is:
+
+Foo.prototype.isPrototypeOf( a ); // true
+
+Notice that in this case, we don’t really care (or even need) Foo, we just
+need an object (in our case, arbitrarily labeled Foo.prototype) to test
+against another object. The question isPrototypeOf(..) answers is:
+
+in the entire [[Prototype]] chain of a, does Foo.prototype ever
+appear?
+
+Same question, and exact same answer. But in this second approach,
+we don’t actually need the indirection of referencing a function (Foo)
+whose .prototype property will automatically be consulted.
+We just need two objects to inspect a relationship between them. For
+example:
+
+// Simply: does b appear anywhere in
+// c's [[Prototype]] chain?
+b.isPrototypeOf( c );
+
+We can also directly retrieve the [[Prototype]] of an object. As of
+ES5, the standard way to do this is:
+
+Object.getPrototypeOf( a );
+
+And you’ll notice that object reference is what we’d expect:
+Object.getPrototypeOf( a ) === Foo.prototype; // true
+
+Most browsers (not all!) have also long supported a nonstandard alternate
+way of accessing the internal [[Prototype]]:
+
+a.__proto__ === Foo.prototype; // true
+
+The strange .__proto__ (not standardized until ES6!) property “magically”
+retrieves the internal [[Prototype]] of an object as a reference,
+which is quite helpful if you want to directly inspect (or even traverse:
+.__proto__.__proto__...) the chain.
+
+Just as we saw earlier with .constructor, .__proto__ doesn’t actually
+exist on the object you’re inspecting (a in our running example).
+In fact, it exists (nonenumerable; see Chapter 2) on the built-in
+Object.prototype, along with the other common utilities (.to
+String(), .isPrototypeOf(..), etc.).
+Moreover, .__proto__ looks like a property, but it’s actually more appropriate
+to think of it as a getter/setter
+
+Roughly, we could envision .__proto__ implemented (see Chapter 3
+for object property definitions) like this:
+
+Object.defineProperty( Object.prototype, "__proto__", {
+  get: function() {
+    return Object.getPrototypeOf( this );
+  },
+  set: function(o) {
+    // setPrototypeOf(..) as of ES6
+    Object.setPrototypeOf( this, o );
+    return o;
+  }
+} );
+
+So, when we access (retrieve the value of) a.__proto__, it’s like calling
+a.__proto__() (calling the getter function). That function call has a
+as its this even though the getter function exists on the Object.pro
+totype object (see Chapter 2 for this binding rules), so it’s just like
+saying Object.getPrototypeOf( a ).
+.__proto__ is also a settable property, just like using ES6’s Object.set
+PrototypeOf(..) shown earlier. However, generally you should not
+change the [[Prototype]] of an existing object.
+
+========================================================
+page 108
+==========
+We don’t need classes to create meaningful relationships between two
+objects. The only thing we should really care about is objects linked
+together for delegation, and Object.create(..) gives us that linkage
+without all the class cruft.
+=====================================
+page 108
+========
+
+Object.create() polyfill
+
+Object.create(..) was added in ES5. You may need to support pre-
+ES5 environments (like older IEs), so let’s take a look at a simple partial
+polyfill for Object.create(..) that gives us the capability that we
+need even in those older JS environments:
+
+if (!Object.create) {
+  Object.create = function(o) {
+  function F(){}
+  F.prototype = o;
+  return new F();
+  };
+}
+
+This polyfill works by using a throwaway F function, and we override
+its .prototype property to point to the object we want to link to. Then
+we use new F() construction to make a new object that will be linked
+as we specified.
+==========================
+page 113
+=======
+As a brief review of our conclusions from Chapter 5, the [[Proto
+type]] mechanism is an internal link that exists on one object that
+references another object.
+===========================
+page 116
+=========
+Basically, think about needing behaviors from two sibling/peer objects
+(XYZ and Task) to perform task “XYZ.” But rather than needing to
+compose them together, via class copies, we can keep them in their
+separate objects, and we can allow the XYZ object to delegate to Task
+when needed.
+Here’s some simple code to suggest how you accomplish that:
+
+Task = {
+  setID: function(ID) { this.id = ID; },
+  outputID: function() { console.log( this.id ); }
+};
+
+// make `XYZ` delegate to `Task`
+XYZ = Object.create( Task );
+XYZ.prepareTask = function(ID,Label) {
+  this.setID( ID );
+  this.label = Label;
+};
+XYZ.outputTaskDetails = function() {
+  this.outputID();
+  console.log( this.label );
+};
+
+// ABC = Object.create( Task );
+// ABC ... = ...
+
+In this code, Task and XYZ are not classes (or functions), they’re just
+objects. XYZ is set up via Object.create(..) to [[Prototype]]-
+delegate to the Task object (see Chapter 5).
+As compared to class orientation (aka object orientation), I call this
+style of code OLOO (objects linked to other objects). All we really
+care about is that the XYZ object delegates to the Task object (as does
+the ABC object).
+============================
+page 117
+=========
+Behavior delegation means to let some object (XYZ) provide a delegation
+(to Task) for property or method references if they are not found
+on the object (XYZ).
+=======================
+139-140
+=========
+
+Introspection
+
+If you’ve spent much time with class-oriented programming (either in
+JS or other languages), you’re probably familiar with type introspection:
+inspecting an instance to find out what kind of object it is.
+...
+Consider this code that uses instanceof (see Chapter 5) for introspecting
+on an object a1 to infer its capability:
+function Foo() {
+// ...
+}
+Foo.prototype.something = function(){
+// ...
+}
+var a1 = new Foo();
+// later
+if (a1 instanceof Foo) {
+  a1.something();
+}
+Because Foo.prototype (not Foo!) is in the [[Prototype]] chain (see
+Chapter 5) of a1, the instanceof operator (confusingly) pretends to
+tell us that a1 is an instance of the Foo “class.” With this knowledge,
+we then assume that a1 has the capabilities described by the Foo “class.”
+Of course, there is no Foo class, only a plain old normal function
+Foo, which happens to have a reference to an arbitrary object (Foo.pro
+totype) that a1 happens to be delegation-linked to. By its syntax,
+instanceof pretends to be inspecting the relationship between a1 and
+Foo, but it’s actually telling us whether a1 and (the arbitrary object
+referenced by) Foo.prototype are related.
+==========================================================
+page 141
+========
+
+Duck typing
+
+Another common, but perhaps less robust, pattern for type introspection,
+which many devs seem to prefer over instanceof, is called “duck
+typing.” This term comes from the adage, “if it looks like a duck, and
+it quacks like a duck, it must be a duck.”
+
+Example:
+
+if (a1.something) {
+  a1.something();
+}
+
+Rather than inspecting for a relationship between a1 and an object
+that holds the delegatable something() function, we assume that the
+test for a1.something passing means a1 has the capability to
+call .something() (regardless of if it found the method directly on a1
+or delegated to some other object). In and of itself, that assumption
+isn’t so risky.
+=============================
+page 140-142
+==============
+
+Introspection
+
+Recall the abstract Foo/Bar/b1 example from earlier in this chapter,
+which we’ll abbreviate here:
+
+function Foo() { /* .. */ }
+Foo.prototype...
+function Bar() { /* .. */ }
+Bar.prototype = Object.create( Foo.prototype );
+var b1 = new Bar( "b1" );
+
+For type introspection purposes on the entities in that example, using
+instanceof and .prototype semantics, here are the various checks
+you might need to perform:
+
+// relating `Foo` and `Bar` to each other
+Bar.prototype instanceof Foo; // true
+Object.getPrototypeOf( Bar.prototype ) === Foo.prototype; // true
+Foo.prototype.isPrototypeOf( Bar.prototype ); // true
+
+// relating `b1` to both `Foo` and `Bar`
+b1 instanceof Foo; // true
+b1 instanceof Bar; // true
+Object.getPrototypeOf( b1 ) === Bar.prototype; // true
+Foo.prototype.isPrototypeOf( b1 ); // true
+Bar.prototype.isPrototypeOf( b1 ); // true
+------------------------------------------------------------------------
+Turning our attention once again back to OLOO-style code as presented
+here in this chapter, type introspection turns out to be much
+cleaner. Let’s recall (and abbreviate) the Foo/Bar/b1 OLOO example
+from earlier in the chapter:
+
+var Foo = { /* .. */ };
+var Bar = Object.create( Foo );
+Bar...
+var b1 = Object.create( Bar );
+
+Using this OLOO approach, where all we have are plain objects that
+are related via [[Prototype]] delegation, here’s the quite simplified
+type introspection we might use:
+
+// relating `Foo` and `Bar` to each other
+Foo.isPrototypeOf( Bar ); // true
+Object.getPrototypeOf( Bar ) === Foo; // true
+
+// relating `b1` to both `Foo` and `Bar`
+Foo.isPrototypeOf( b1 ); // true
+Bar.isPrototypeOf( b1 ); // true
+Object.getPrototypeOf( b1 ) === Bar; // true
+====================================================
+mine
+=====
+var Foo = {a:1,b:function() { console.log('Hi ' + this.a); } }
+< undefined
+var Bar = Object.create(Foo)
+< undefined
+var Baz = Object.create(Bar)
+< undefined
+Bar.a = 2
+< 2
+Baz.a = 3
+< 3
+Baz.b()
+< Hi 3
+< undefined
+Bar.b()
+< Hi 2
+< undefined
+for(var k in Baz) { console.log(k); }
+  a
+  b
+< undefined
+Foo.isPrototypeOf(Baz)
+< true
+Object.getPrototypeOf(Baz) === Foo
+< false
+Object.getPrototypeOf(Bar) === Foo
+< true
+Object.getPrototypeOf(Baz) === Bar
+< true
+Object.getPrototypeOf(Baz)
+< Object {a: 2}
+==============================================
+page 143
+=========
+
+Review
+
+Classes and inheritance are a design pattern you can choose, or not
+choose, in your software architecture. Most developers take for granted
+that classes are the only (proper) way to organize code, but here we’ve
+seen there’s another less-commonly talked about pattern that’s actually
+quite powerful: behavior delegation.
+Behavior delegation suggests objects as peers of each other, which delegate
+among themselves, rather than parent and child class relationships.
+JavaScript’s [[Prototype]] mechanism is, by its very designed
+nature, a behavior delegation mechanism. That means we can either
+choose to struggle to implement class mechanics on top of JS (see
+Chapters 4 and 5), or we can just embrace the natural state of [[Pro
+totype]] as a delegation mechanism.
+When you design code with objects only, not only does it simplify the
+syntax you use, but it can actually lead to simpler code architecture
+design.
+OLOO (objects linked to other objects) is a code style that creates and
+relates objects directly without the abstraction of classes. OLOO quite
+naturally implements [[Prototype]]-based behavior delegation.

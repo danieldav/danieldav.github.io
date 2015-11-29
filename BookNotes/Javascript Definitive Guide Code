@@ -1,0 +1,144 @@
+=============
+page 49
+=======
+parseInt("3 blind mice") // => 3
+parseFloat(" 3.14 meters") // => 3.14
+parseInt("-12.34") // => -12
+parseInt("0xFF") // => 255
+parseInt("0xff") // => 255
+parseInt("-0XFF") // => -255
+parseFloat(".1") // => 0.1
+parseInt("0.1") // => 0
+parseInt(".1") // => NaN: integers can't start with "."
+parseFloat("$72.47"); // => NaN: numbers can't start with "$"
+
+parseInt() accepts an optional second argument specifying the radix (base) of the
+number to be parsed. Legal values are between 2 and 36.
+
+For example:
+
+parseInt("11", 2); // => 3 (1*2 + 1)
+parseInt("ff", 16); // => 255 (15*16 + 15)
+parseInt("zz", 36); // => 1295 (35*36 + 35)
+parseInt("077", 8); // => 63 (7*8 + 7)
+parseInt("077", 10); // => 77 (7*10 + 7)
+=================================================
+The following code demonstrates the behavior of
++, -, ==, and > with Date objects:
+
+var now = new Date(); // Create a Date object
+
+typeof (now + 1) // => "string": + converts dates to strings
+typeof (now - 1) // => "number": - uses object-to-number conversion
+now == now.toString() // => true: implicit and explicit string conversions
+now > (now -1) // => true: > converts a Date to a number
+
+====================================================
+for(var i = 0, j=10; i < 10; i++,j--) console.log(i*j);
+======================================================
+page 81
+==========
+Eval - Direct and Indirect
+-------------------------
+
+var geval = eval; // Using another name does a global eval
+var x = "global", y = "global"; // Two global variables
+function f() { // This function does a local eval
+var x = "local"; // Define a local variable
+eval("x += 'changed';"); // Direct eval sets local variable
+return x; // Return changed local variable
+}
+function g() { // This function does a global eval
+var y = "local"; // A local variable
+geval("y += 'changed';"); // Indirect eval sets global variable
+return y; // Return unchanged local variable
+}
+console.log(f(), x); // Local variable changed: prints "localchanged global":
+console.log(g(), y); // Global variable changed: prints "local globalchanged":
+
+===========================================================================
+Using Accessor/Data Properties
+------------------------
+var createPerson = function(firstName,lastName) {
+  var person = {};
+  Object.defineProperties(person,{
+    firstName: {
+      value: firstName
+    },
+    lastName: {
+      value: lastName
+    },
+    fullName: {
+      get: function() {
+        return this.firstName + ' ' + this.lastName;
+      },
+      set: function(value) {
+        this.firstName = value.split(' ')[0] || '';
+        this.lastName = value.split(' ')[1] || '';
+      }
+    }
+
+  });
+  return person;
+}
+-------------------------------------------------
+var Person = function(firstName,lastName) {
+  this.firstName = firstName;
+  this.lastName = lastName;
+
+}
+Object.defineProperties(Person.prototype,{
+  sayHi: {
+    value: function() {
+      return 'Hi there';
+    },
+    enumerable: true
+  },
+  fullName: {
+    get: function() {
+        return this.firstName + ' ' + this.lastName;
+    }
+  }
+});
+var JohnDoe = new Person('John','Doe');
+--------------------------------------------------
+var Person = function(firstName,lastName) {
+  this.lastName = lastName;
+  this.sayHi = function() {
+    return "Hi there " + firstName; //emulate privacy on Person.firstName
+  }
+};
+Object.defineProperties(Person.prototype,{
+  sayHi: {
+    value: function() {
+      return 'Hi there';
+    },
+    enumerable: true,
+    writable: true
+  },
+  fullName: {
+    get: function() {
+        return this.firstName + ' ' + this.lastName;
+    }
+  }
+});
+var JohnDoe = new Person('John','Doe');
+================================================================
+Definitive Guide page 130
+
+Accessor properties Use case
+---------------------------
+// This object generates strictly increasing serial numbers
+  var serialnum = {
+  // This data property holds the next serial number.
+  // The $ in the property name hints that it is a private property.
+  $n: 0,
+  // Return the current value and increment it
+  get next() { return this.$n++; },
+  // Set a new value of n, but only if it is larger than current
+  set next(n) {
+  if (n >= this.$n) this.$n = n;
+  else throw "serial number can only be set to a larger value";
+  }
+};
+==============================================================

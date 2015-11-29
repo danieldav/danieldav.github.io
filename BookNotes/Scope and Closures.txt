@@ -1,0 +1,226 @@
+page 8-9
+======
+We said that Scope is a set of rules for looking up variables by their
+identifier name. There’s usually more than one scope to consider,
+however.
+...
+The simple rules for traversing nested scope: Engine starts at the currently
+executing scope, looks for the variable there, then if not found,
+keeps going up one level, and so on. If the outermost global scope is
+reached, the search stops, whether it finds the variable or not.
+=========
+page 11
+=======
+If an RHS look-up fails to ever find a variable, anywhere in the nested
+scopes, this results in a ReferenceError being thrown by the engine.
+It’s important to note that the error is of the type ReferenceError.
+By contrast, if the engine is performing an LHS look-up, and it arrives
+at the top floor (global scope) without finding it, if the program is not
+running in “Strict Mode,”1 then the global scope will create a new variable
+of that name in the global scope, and hand it back to Engine.
+“No, there wasn’t one before, but I was helpful and created one for you.”
+“Strict Mode,” which was added in ES5, has a number of different behaviors
+from normal/relaxed/lazy mode. One such behavior is that it
+disallows the automatic/implicit global variable creation. In that case,
+there would be no global scoped variable to hand back from an LHS
+look-up, and Engine would throw a ReferenceError similarly to the
+RHS case.
+===========
+page 11
+=======
+Scope is the set of rules that determines where and how a variable
+(identifier) can be looked up. This look-up may be for the purposes of
+assigning to the variable, which is an LHS (lefthand-side) reference,
+or it may be for the purposes of retrieving its value, which is an RHS
+(righthand-side) reference.
+LHS references result from assignment operations. Scope-related assignments
+can occur either with the = operator or by passing arguments
+to (assign to) function parameters.
+======================================
+page 15
+=======
+Scope look-up stops once it finds the first match. The same identifier
+name can be specified at multiple layers of nested scope, which is called
+“shadowing” (the inner identifer “shadows” the outer identifier). Regardless
+of shadowing, scope look-up always starts at the innermost
+scope being executed at the time, and works its way outward/upward
+until the first match, and stops.
+===================================
+mine---
+var a = 5;
+var b = function() {
+var a = 6;
+console.log('a= ' + a);
+console.log('window.a= ' + window.a); }
+undefined
+b()
+< a= 6
+< window.a= 5
+======================
+page 16
+========
+No matter where a function is invoked from, or even how it is invoked,
+its lexical scope is only defined by where the function was declared.
+The lexical scope look-up process only applies to first-class identifiers,
+such as the a, b, and c. If you had a reference to foo.bar.baz in a piece
+of code, the lexical scope look-up would apply to finding the foo
+identifier, but once it locates that variable, object property-access rules
+take over to resolve the bar and baz properties, respectively.
+==================================================================
+page 21
+=========
+Lexical scope means that scope is defined by author-time decisions of
+where functions are declared. The lexing phase of compilation is essentially
+able to know where and how all identifiers are declared, and
+thus predict how they will be looked up during execution.
+Two mechanisms in JavaScript can “cheat” lexical scope: eval(..) and
+with. The former can modify existing lexical scope (at runtime) by
+evaluating a string of “code” that has one or more declarations in it.
+The latter essentially creates a whole new lexical scope (again, at runtime)
+by treating an object reference as a scope and that object’s properties
+as scoped identifiers.
+======================
+page 31
+========
+...This pattern is so common, a few years ago the community agreed on
+a term for it: IIFE, which stands for immediately invoked function
+expression.
+===========
+mine
+====
+var foo = (function() {
+  "use strict";
+  for(let i = 0;i <10; i++) {
+     console.log(i);
+  }
+})();
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+undefined
+=========================
+page 42
+==========
+When you see var a = 2;, you probably think of that as one statement.
+But JavaScript actually thinks of it as two statements: var a; and a =
+2;. The first statement, the declaration, is processed during the compilation
+phase. The second statement, the assignment, is left in place
+for the execution phase.
+==========================
+page 44-45
+========
+Functions First
+Both function declarations and variable declarations are hoisted. But
+a subtle detail (that can show up in code with multiple “duplicate”
+declarations) is that functions are hoisted first, and then variables.
+...
+Notice that var foo was the duplicate (and thus ignored) declaration,
+even though it came before the function foo()… declaration, because
+function declarations are hoisted before normal variables.
+While multiple/duplicate var declarations are effectively ignored,
+subsequent function declarations do override previous ones.
+================================
+page 46
+=======
+We can be tempted to look at var a = 2; as one statement, but the
+JavaScript engine does not see it that way. It sees var a and a = 2 as
+two separate statements, the first one a compiler-phase task, and the
+second one an execution-phase task.
+What this leads to is that all declarations in a scope, regardless of where
+they appear, are processed first before the code itself is executed. You
+can visualize this as declarations (variables and functions) being
+“moved” to the top of their respective scopes, which we call hoisting.
+Declarations themselves are hoisted, but assignments, even assignments
+of function expressions, are not hoisted.
+Be careful about duplicate declarations, especially mixed between
+normal var declarations and function declarations—peril awaits if you
+do!
+============
+page 48
+=========
+Closure is when a function is able to remember and access its lexical
+scope even when that function is executing outside its lexical scope.
+=======================
+page 50
+=========
+The function is being invoked well outside of its author-time lexical
+scope. Closure lets the function continue to access the lexical scope it
+was defined in at author time.
+Of course, any of the various ways that functions can be passed
+around as values, and indeed invoked in other locations, are all examples
+of observing/exercising closure.
+
+===================================================
+There’s a special
+behavior defined for let declarations used in the head of a for loop.
+This behavior says that the variable will be declared not just once for
+the loop, but each iteration. And, it will, helpfully, be initialized at
+each subsequent iteration with the value from the end of the previous
+iteration.
+
+(function() {
+  "use strict";
+  for (let i=1; i<=5; i++) {
+    setTimeout( function timer(){
+      console.log( i );
+      }, i*1000 );
+  }
+})();
+=======================================================
+page 63 - 64
+========
+Closure is when a function can remember and access its lexical scope
+even when it’s invoked outside its lexical scope.
+Closures can trip us up, for instance with loops, if we’re not careful to
+recognize them and how they work. But they are also an immensely
+powerful tool, enabling patterns like modules in their various forms.
+
+Modules require two key characteristics: 1) an outer wrapping function
+being invoked, to create the enclosing scope 2) the return value
+of the wrapping function must include reference to at least one inner
+function that then has closure over the private inner scope of the
+wrapper.
+Now we can see closures all around our existing code, and we have the
+ability to recognize and leverage them to our own benefit!
+==============
+page 75
+====
+ES6 adds a special syntactic form of function declaration called the
+arrow function. It looks like this:
+
+var foo = a => {
+  console.log( a );
+};
+
+foo( 2 ); // 2
+
+The so-called “fat arrow” is often mentioned as a shorthand for the
+tediously verbose (sarcasm) function keyword.
+==============================================
+page 76-77
+=======
+var obj = {
+  count: 0,
+  cool: function coolFn() {
+    if (this.count < 1) {
+      setTimeout( () => { // arrow-function ftw?
+        this.count++;
+        console.log( "awesome?" );
+      }, 100 );
+    }
+  }
+};
+obj.cool(); // awesome?
+
+The short explanation is that arrow functions do not behave at all like
+normal functions when it comes to their this binding. They discard
+all the normal rules for this binding, and instead take on the this
+value of their immediate lexical enclosing scope, whatever it is.
+======================================================================

@@ -1,0 +1,82 @@
+Terms:
+
+
+Character Classes []
+
+Quantifiers
+
+Flags
+====
+/g - global
+/i - case insensitive
+/m - multiline
+/u - ES6 - unicode: take into account ASTRA unicode chars (with surrogate pairs)
+
+===========================
+Hex color:
+/^#([a-f\d]{3}){1,2}$/i
+
+=============================
+A signed decimal number
+
+/^[-+]?\d*\.?\d+$/g
+
+================================
+Look ahead
+
+/a(?=b)/g
+
+Match a (only) if it is followed by b
+
+======================================
+Negative Lookahead
+
+/a(?!b)/g
+
+Match the a (only) if it not followed by b
+
+============================================
+No Lookbehind in ES5
+
+=====================================
+Date in the form: 2000-08-28
+
+^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[01])$\g
+
+========================
+Lookahead hacks:
+
+Intersection:
+-------------
+
+// A 6+ letter password with at least:
+// one number, one letter and one Symbol
+
+/^(?=.*\d)(?=.*[a-z])(?=.*[\W_]).{6,}$/i
+
+
+Subtraction:
+------------
+
+// Any number that's NOT divisible by 50
+
+/\b(?!\d+[50]0)\d+\b/
+
+Negation:
+---------
+
+// Anything that doesn't contain 'foo'
+
+/^(?!.*foo).+$/
+
+=====================================
+String Matcher
+
+
+Mine: /('|").+?\1/g
+
+
+Theirs: /('|")(\\?.)*?\1/g
+
+
+=======================================

@@ -1,0 +1,1034 @@
+
+=====================================================
+Javascript Built-in Functions,Methods and Properties
+=====================================================
+
+Array Method Details
+======================
+The following details apply to the forEach() method, and also to the related methods
+
+map(),filter(), every(), and some().
+
+Each of these methods expects a function as its first argument and accepts an optional second
+argument. If a second argument o is specified, then the function is invoked as if it was a method
+of o. That is, within the body of the function, this will evaluate to o. If the second argument
+is not specified, then the function is invoked as a function (not a method) and this will be
+the global object in non-strict code or null in strict code.
+
+Each of these methods notes the length of array before it begins looping. If the invoked function
+appends new elements to array, those newly-added elements will not be looped over. If
+the function alters existing elements that have not yet been looped over, it is the altered values
+that will be passed.
+
+When invoked on sparse arrays, these methods do not invoke the function for indexes at
+which no element actually exists.
+
+=====================================
+Array.every() ECMAScript 5
+-----------------------------
+test whether a predicate is true for every element
+
+Synopsis
+--------
+array.every(predicate)
+array.every(predicate, o)
+
+Arguments
+---------
+predicate
+  A predicate function to test array elements
+o
+  The optional this value for invocations of predicate.
+
+Returns
+-------
+true if predicate returns true (or any truthy value) for every element of array or false if the
+predicate returns false (or a falsy value) for any element.
+
+Example
+-------
+[1,2,3].every(function(x) { return x < 5; }) // => true: all elts are < 5
+[1,2,3].every(function(x) { return x < 3; }) // => false: all elts are not < 3
+[].every(function(x) { return false; }); // => true: always true for []
+
+==============================================
+Array.filter() ECMAScript 5
+---------------------------
+return array elements that pass a predicate
+
+Synopsis
+--------
+  array.map(predicate)
+  array.map(predicate, o)
+
+Arguments
+-----------
+predicate
+  The function to invoke to determine whether an element of array will be included in the
+  returned array.
+o
+  An optional value on which predicate is invoked.
+
+  Returns
+  --------
+  A new array containing only those elements of array for which predicate returned true (or a
+  truthy value).
+
+  Example
+  -------
+  [1,2,3].filter(function(x) { return x > 1; }); // => [2,3]
+
+=============================================================
+Array.forEach() ECMAScript 5
+-------------------------------
+invoke a function for each array element
+
+Synopsis
+--------
+array.forEach(f)
+array.forEach(f, o)
+
+Arguments
+---------
+f
+  The function to invoke for each element of array.
+o
+  An optional value on which f is invoked.
+
+Returns
+--------
+This method returns nothing.
+
+var a = [1,2,3];
+a.forEach(function(x,i,a) { a[i]++; }); // a is now [2,3,4]
+=============================================================
+Array.indexOf() ECMAScript 5:
+---------------------------
+search an array
+
+Synopsis
+--------
+array.indexOf(value)
+array.indexOf(value, start)
+
+Arguments
+---------
+value:
+  The value to search array for.
+start:
+  An optional array index at which to begin the search. If omitted, 0 is used.
+
+Returns
+--------
+  The lowest index >= start of array at which the element is === to value, or -1 if no such
+  matching element exists.
+
+Examples:
+---------
+
+['a','b','c'].indexOf('b')
+1
+['a','b','c','b'].indexOf('b')
+1
+['a','b','c','b'].indexOf('b',2)
+3
+['a','"b"','c','b'].indexOf('b')
+3
+['a','"b"','c','b'].indexOf('d')
+-1
+====================================================
+Array.lastIndexOf() ECMAScript 5
+------------------------------------
+search backward through an array
+
+Array.prototype.myLastIndexOf = function(char,start) {
+  var reverse = this.reverse().indexOf(char,this.length-1-start);
+  return reverse == -1 ? -1 : this.length - 1 - reverse;
+};
+======================================================
+Array.length
+------------
+the size of an array
+
+Description
+-----------
+The length property of an array is initialized when the array is created with
+the Array() constructor method.
+
+Adding new elements to an array updates the length, if necessary:
+
+a = new Array(); // a.length initialized to 0
+b = new Array(10); // b.length initialized to 10
+c = new Array("one", "two", "three"); // c.length initialized to 3
+c[3] = "four"; // c.length updated to 4
+c[10] = "blastoff"; // c.length becomes 11
+
+You can set the value of the length property to change the size of an array.
+If you set length to be smaller than its previous value, the array is truncated,
+and elements at the end are lost.
+
+If you set length to be larger than its previous value, the array becomes
+bigger, and the new elements added at the end of the array have the
+undefined value.
+
+> var a = [1,2,3,4]
+undefined
+> a.length = 2
+2
+> a
+[1, 2]
+> var b = [1,2,3,4]
+undefined
+> b.length = 10
+10
+> b
+[1, 2, 3, 4, undefined × 6]
+> b.push(5)
+11
+> b
+[1, 2, 3, 4, undefined × 6, 5]
+=====================================================
+Array.map() ECMAScript 5
+------------------------
+compute new array elements from old
+
+
+a[i] = f(array[i], i, array)
+
+> var arr = [1,2,3,4]
+undefined
+> arr = arr.map(function(x) { return Math.pow(x,3)});
+[1, 8, 27, 64]
+> arr
+[1, 8, 27, 64]
+===================================================
+Array.pop()
+------------
+remove and return the last element of an array
+pop(), and its companion method push(), provide the functionality of a
+first-in, last-out stack.
+
+For example:
+
+var stack = []; // stack: []
+stack.push(1, 2); // stack: [1,2] Returns 2
+stack.pop(); // stack: [1] Returns 2
+stack.push([4,5]); // stack: [1,[4,5]] Returns 2
+stack.pop() // stack: [1] Returns [4,5]
+stack.pop(); // stack: [] Returns 1
+
+====================================================
+Array.push()
+----------------
+append elements to an array
+Synopsis
+---------
+array.push(value, ...)
+Arguments
+--------
+value, ...
+One or more values to be appended to the end of array.
+Returns
+-------
+The new length of the array, after the specified values are appended to it.
+===================================================================
+Array.reduce() ECMAScript 5
+-----------------------------
+compute a value from the elements of an array
+Synopsis
+----------
+array.reduce(f)
+array.reduce(f, initial)
+
+...but reduce() actually invokes that function
+with four arguments.
+
+The third argument is the array index of the second argument.
+The fourth argument is array itself.
+f is always invoked as a function, not as a method.
+
+Example
+-------
+[1,2,3,4].reduce(function(x,y) { return x*y; }) // => 24: ((1*2)*3)*4
+
+[1,2,3,4].reduce(function(x,y) { return x*y; },3) // => 72: ((3*1)*2)*3)*4
+72
+[1,2,3,4].reduce(function(x,y,z) { return x*y*z; }) // => 144: ((1*2*1)*3*2)*4*3
+144
+[1,2,3,4].reduce(function(x,y,z) { return x*y*z; },4) // ???
+0
+=====================================================
+Array.reduceRight() ECMAScript 5
+----------------------------------
+reduce an array from right-to-left
+
+Returns
+--------
+The reduced value of the array, which is the return value of the last invocation of f.
+
+Description
+-----------
+reduceRight() works like the reduce() method: it invokes the function f n-1 times to reduce
+the n elements of array to a single value. reduceRight() differs from reduce() only in that it
+enumerates array elements from right to left (from highest index to lowest) rather than left to
+right. See Array.reduce() for details.
+
+Example
+--------
+[2, 10, 60].reduceRight(function(x,y) { return x/y }) // => 3: (60/10)/2
+
+====================================================
+Array.reverse()
+------------------
+reverse the elements of an array
+
+Synopsis
+--------
+array.reverse()
+
+Description
+-----------
+The reverse() method of an Array object reverses the order of the elements of an array. It
+does this in place: it rearranges the elements of the specified array without creating a new
+array. If there are multiple references to array, the new order of the array elements is visible
+through all references.
+
+Example
+-------
+
+a = new Array(1, 2, 3); // a[0] == 1, a[2] == 3;
+a.reverse(); // Now a[0] == 3, a[2] == 1;
+
+-------------------------------------------------------
+
+> var a = [1,2,3,4]
+undefined
+> a.reduce(function(x,y) { return x-y; })
+-8
+> a.reverse()
+[4, 3, 2, 1]
+> a.reduce(function(x,y) { return x-y; })
+-2
+----
+> var a = [1,2,3,4]
+undefined
+> var b = a.reduce(function(x,y) { return x-y; })
+undefined
+> a.reverse()
+[4, 3, 2, 1]
+> b
+-8 // Note that here the var b is not effected
+---------
+> var a = [1,2,3,4]
+undefined
+> var b = function(arr) { return arr.reduce(function(x,y) { return x-y; }); }
+undefined
+> a.reverse()
+[4, 3, 2, 1]
+> b(a)
+-2 // Note that here the var b IS effected
+===========================================================
+Array.shift()
+--------------
+shift array elements down
+
+Synopsis
+--------
+array.shift()
+
+Returns
+--------
+The former first element of the array.
+
+Description
+-----------
+shift() removes and returns the first element of array, shifting all subsequent elements down
+one place to occupy the newly vacant space at the start of the array. If the array is empty,
+shift() does nothing and returns the undefined value. Note that shift() does not create a
+new array; instead, it modifies array directly.
+shift() is similar to Array.pop(), except it operates on the beginning of an array rather than
+the end. shift() is often used in conjunction with unshift().
+
+Example
+--------
+var a = [1, [2,3], 4]
+a.shift(); // Returns 1; a = [[2,3], 4]
+a.shift(); // Returns [2,3]; a = [4]
+=========================================================
+Array.slice()
+-------------
+return a portion of an array
+
+Synopsis
+--------
+array.slice(start, end)
+
+Arguments
+---------
+start
+The array index at which the slice is to begin. If negative, this argument specifies a position
+measured from the end of the array. That is, −1 indicates the last element, −2 indicates
+the next from the last element, and so on.
+end
+The array index immediately after the end of the slice. If not specified, the slice includes
+all array elements from the start to the end of the array. If this argument is negative, it
+specifies an array element measured from the end of the array.
+
+Returns
+---------
+A new array that contains the elements of array from the element specified by start, up to,
+but not including, the element specified by end.
+
+Description
+-----------
+slice() returns a slice, or subarray, of array. The returned array contains the element specified
+by start and all subsequent elements up to, but not including, the element specified by end.
+If end is not specified, the returned array contains all elements from the start to the end of
+array.
+Note that slice() does not modify the array. If you want to actually remove a slice of an array,
+use Array.splice().
+
+Example
+-------
+var a = [1,2,3,4,5];
+a.slice(0,3); // Returns [1,2,3]
+a.slice(3); // Returns [4,5]
+a.slice(1,-1); // Returns [2,3,4]
+a.slice(-3,-2); // Returns [3]; buggy in IE 4: returns [1,2,3]
+==================================================================
+Array.some() ECMAScript 5
+----------------------------
+test whether a predicate is true for any element
+Synopsis
+---------
+array.some(predicate)
+array.some(predicate, o)
+Arguments
+----------
+predicate
+  A predicate function to test array elements
+o
+  The optional this value for invocations of predicate.
+
+Returns
+-------
+true if predicate returns true (or a truthy value) for at least one element of array or false if
+the predicate returns false (or a falsy value) for all elements.
+
+Description
+------------
+The some() method tests whether a condition holds for at least one element of an array. It
+loops through the elements of array, in ascending order, and invokes the specified predi
+cate function on each element in turn. If predicate returns true (or a value that converts to
+true), then some() stops looping and returns true immediately. If every invocation of predi
+cate returns false (or a value that converts to false), then some() returns false. When invoked
+on an empty array, some() returns false.
+This method is very much like every(). See Array.every() and Array.forEach() for further
+details.
+
+Example
+---------
+[1,2,3].some(function(x) { return x > 5; }) // => false: no elts are > 5
+[1,2,3].some(function(x) { return x > 2; }) // => true: some elts are > 3
+[].some(function(x) { return true; }); // => false: always false for []
+
+===================
+Array.sort()
+--------------
+sort the elements of an array
+Synopsis
+----------
+array.sort()
+array.sort(orderfunc)
+
+orderfunc
+  An optional function used to specify the sorting order.
+
+Returns
+-------
+A reference to the array. Note that the array is sorted in place, and no copy is made.
+
+Description
+------------
+The sort() method sorts the elements of array in place: no copy of the array is made. If
+sort() is called with no arguments, the elements of the array are arranged in alphabetical
+order (more precisely, the order determined by the character encoding). To do this, elements
+are first converted to strings, if necessary, so that they can be compared.
+If you want to sort the array elements in some other order, you must supply a comparison
+function that compares two values and returns a number indicating their relative order. The
+comparison function should take two arguments, a and b, and should return one of the following:
+• A value less than zero, if, according to your sort criteria, a is less than b and should appear
+before b in the sorted array.
+• Zero, if a and b are equivalent for the purposes of this sort.
+• A value greater than zero, if a is greater than b for the purposes of the sort.
+Note that undefined elements of an array are always sorted to the end of the array. This is
+true even if you provide a custom ordering function: undefined values are never passed to the
+orderfunc you supply.
+
+Example
+-------
+The following code shows how you might write a comparison function to sort an array of
+numbers in numerical, rather than alphabetical order:
+// An ordering function for a numerical sort
+function numberorder(a, b) { return a - b; }
+a = new Array(33, 4, 1111, 222);
+a.sort(); // Alphabetical sort: 1111, 222, 33, 4
+a.sort(numberorder); // Numerical sort: 4, 33, 222, 1111
+=============================================================
+Array.splice()
+--------------
+insert, remove, or replace array elements
+
+Synopsis
+---------
+array.splice(start, deleteCount, value, ...)
+
+Arguments
+----------
+start
+  The array element at which the insertion and/or deletion is to begin.
+deleteCount
+  The number of elements, starting with and including start, to be deleted from array.
+  Specify 0 to insert elements without deleting any.
+value, ...
+  Zero or more values to be inserted into array, beginning at the index specified by start.
+
+Returns
+-------
+An array containing the elements, if any, deleted from array.
+
+Description
+-----------
+splice() deletes zero or more array elements starting with and including the element start
+and replaces them with zero or more values specified in the argument list. Array elements that
+appear after the insertion or deletion are moved as necessary so that they remain contiguous
+with the rest of the array. Note that, unlike the similarly named slice(), splice() modifies
+array directly.
+
+Example
+-------
+> var a = [1,2,3,4,5,6,7,8]
+undefined
+> a
+[1, 2, 3, 4, 5, 6, 7, 8]
+> a.splice(1,2)
+[2, 3]
+> a
+[1, 4, 5, 6, 7, 8]
+> a.splice(1,1)
+[4]
+> a
+[1, 5, 6, 7, 8]
+> a.splice(1,0,2,3)
+[]
+> a
+[1, 2, 3, 5, 6, 7, 8]
+====================================================
+Array.toLocaleString()
+convert an array to a localized string Overrides Object.toLocaleString()
+Synopsis
+array.toLocaleString()
+Returns
+A localized string representation of array.
+Throws
+TypeError
+If this method is invoked on an object that is not an Array.
+Description
+The toLocaleString() method of an array returns a localized string representation of an array.
+It does this by calling the toLocaleString() method of all of the array elements, then concatenating
+the resulting strings using a locale-specific separator character.
+
+See also:
+
+https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString
+
+Examples:
+
+> var date = new Date(Date.UTC(2012, 11, 20, 3, 0, 0));
+undefined
+> date
+Thu Dec 20 2012 05:00:00 GMT+0200 (Jerusalem Standard Time)
+> console.log(date.toLocaleString('ja-JP-u-ca-japanese'));
+平成24/12/20 5:00:00
+undefined
+> console.log(date.toLocaleString('he-IL'));
+20.12.2012, 05:00:00
+undefined
+> console.log(date.toLocaleString('he-IL-u-ca-hebrew'));
+7 בטבת 5773, 05:00:00
+============================================
+Array.toString()
+----------------
+convert an array to a string [Overrides Object.toString() ]
+
+Synopsis
+--------
+array.toString()
+
+Returns
+---------
+A string representation of array.
+Throws
+TypeError
+If this method is invoked on an object that is not an Array.
+
+Description
+-------------
+The toString() method of an array converts an array to a string and returns the string. When
+an array is used in a string context, JavaScript automatically converts it to a string by calling
+this method. On some occasions, however, you may want to call toString() explicitly.
+toString() converts an array to a string by first converting each array element to strings (by
+calling its toString() method). Once each element is converted to a string, toString() outputs
+them in a comma-separated list. This return value is the same string that would be returned
+by the join() method with no arguments.
+================================================
+Array.unshift()
+----------------
+insert elements at the beginning of an array
+
+Synopsis
+---------
+array.unshift(value, ...)
+
+Arguments
+---------
+value, ...
+One or more values that are inserted at the start of array.
+
+Returns
+-------
+The new length of the array
+===================================================
+=====================================================
+======================================================
+encodeURI()
+-----------
+escape characters in a URI
+
+Example
+---------
+
+// Returns http://www.isp.com/app.cgi?arg1=1&arg2=hello%20world
+encodeURI("http://www.isp.com/app.cgi?arg1=1&arg2=hello world");
+
+encodeURI("\u00a9"); // The copyright character encodes to %C2%A9
+=====================
+
+===========================================
+===========================================
+Error
+--------
+a generic exception Object → Error
+
+Constructor
+-----------
+new Error()
+new Error(message)
+
+Arguments
+---------
+message
+  An optional error message that provides details about the exception.
+Returns
+  A newly constructed Error object. If the message argument is specified, the Error object uses
+  it as the value of its message property; otherwise, it uses an implementation-defined default
+  string as the value of that property. When the Error() constructor is called as a function,
+  without the new operator, it behaves just as it does when called with the new operator.
+
+Properties
+----------
+message
+  An error message that provides details about the exception. This property holds the string
+  passed to the constructor or an implementation-defined default string.
+name
+  A string that specifies the type of the exception. For instances of the Error class and all
+  of its subclasses, this property specifies the name of the constructor used to create the
+  instance.
+
+Examples
+---------
+You might signal an exception with code like the following:
+
+function factorial(x) {
+  if (x < 0) throw new Error("factorial: x must be >= 0");
+  if (x <= 1) return 1; else return x * factorial(x-1);
+}
+
+And if you catch an exception, you might display its to the user with code like the following
+(which uses the client-side Window.alert() method):
+
+try { something /* an error is thrown here */ }
+catch(e) {
+  if (e instanceof Error) { // Is it an instance of Error or a subclass?
+    alert(e.name + ": " + e.message);
+  }
+}
+====================================
+eval()
+
+Example
+eval("1+2"); // Returns 3
+// This code uses client-side JavaScript methods to prompt the user to
+// enter an expression and to display the results of evaluating it.
+// See the client-side methods Window.alert() and Window.prompt() for details.
+try {
+alert("Result: " + eval(prompt("Enter an expression:","")));
+}
+catch(exception) {
+alert(exception);
+}
+
+==================
+Functions:
+
+In JavaScript 1.1 and later, the body of a function is automatically given a local variable, named
+arguments, that refers to an Arguments object. This object is an array of the values passed as
+arguments to the function. Don’t confuse this with the deprecated arguments[] property listed
+earlier. See the Arguments reference page for details.
+
+=======================
+Function.apply()
+------------------
+invoke a function as a method of an object
+
+Synopsis
+--------
+function.apply(thisobj, args)
+
+Arguments
+---------
+thisobj
+  The object to which function is to be applied. In the body of the function, thisobj becomes
+  the value of the this keyword. If this argument is null, the global object is used.
+
+Example:
+--------
+
+> num  = 4
+4
+> var obj = { num: 3} ;
+undefined
+> function sum(x) { return this.num + x; }
+undefined
+> sum(2)
+6
+> sum.apply(obj,[7])
+10
+============================
+Function.bind() ECMAScript 5
+----------------------------
+return a function that invokes this as a method
+
+Synopsis
+---------
+function.bind(o)
+function.bind(o, args...)
+
+Arguments
+---------
+o
+  The object to which this function should be bound.
+args...
+  Zero or more argument values that will also be bound.
+
+Returns
+--------
+A new function which invokes this function as a method of o and passes it the arguments args.
+Description
+The bind() method returns a new function which invokes this function as a method of the
+object o. The arguments passed to this function consist of the args passed to bind() followed
+by whatever values are passed to the new function.
+
+Example
+-------
+Suppose that f is a function and we call the bind() method like this:
+var g = f.bind(o, 1, 2);
+Now g is a new function and the invocation g(3) is equivalent to:
+f.call(o, 1, 2, 3);
+=================================
+Function.call()
+----------------
+invoke a function as a method of an object
+
+Synopsis
+--------
+function.call(thisobj, args...)
+
+Arguments
+---------
+thisobj
+  The object on which function is to be invoked. In the body of the function, thisobj
+  becomes the value of the this keyword. If this argument is null, the global object is used.
+args...
+  Any number of arguments, which will be passed as arguments to function.
+
+Returns
+-------
+Whatever value is returned by the invocation of function.
+=========================================================
+Function.length
+------------------
+the number of declared arguments
+
+Synopsis
+--------
+function.length
+
+Description
+-----------
+The length property of a function specifies the number of named arguments declared when
+the function was defined. The function may actually be invoked with more than or fewer than
+this number of arguments. Don’t confuse this property of a Function object with the length
+property of the Arguments object, which specifies the number of arguments actually passed
+to the function.
+=======================
+Function.prototype
+-------------------
+the prototype for a class of objects
+
+Synopsis
+--------
+function.prototype
+
+Description
+----------
+The prototype property is used when a function is used as a constructor. It refers to an object
+that serves as the prototype for an entire class of objects. Any object created by the constructor
+inherits all properties of the object referred to by the prototype property.
+See Chapter 9 for a full discussion of constructor functions, the prototype property, and the
+definition of classes in JavaScript.
+====================================
+NaN = Not a number
+-------------------
+NaN has the special property that it is not equal to any value including itself. So if you want to
+test specifically for the NaN value, rather than generically for any non-number,
+do not write x === NaN: that will always be false.
+Instead, use the expression x !== x: this will evaluate to true only if x is NaN.
+
+A common use of isNaN() is to test the results of parseFloat() and parseInt() to determine
+if they represent legal numbers.
+
+Example
+-------
+isNaN(0); // => false
+isNaN(0/0); // => true
+isNaN(parseInt("3")); // => false
+isNaN(parseInt("hello")); // => true
+isNaN("3"); // => false
+isNaN("hello"); // => true
+isNaN(true); // => false
+isNaN(undefined); // => true
+=========================================
+JSON ECMAScript 5
+-----------------
+JSON parsing and stringification
+
+“JSON” stands for JavaScript Object Notation. JSON is a data serialization format based on
+JavaScript literals, and can represent the null value, the boolean values true and false, floating-
+point numbers (using JavaScript numeric literals), strings (using JavaScript string literals),
+arrays of values (using JavaScript array literal syntax) and string to value mappings (using
+JavaScript object literal syntax). The primitive value undefined as well as the numbers NaN
+and Infinity are not representable in JSON. JavaScript functions, Dates, RegExps and Errors
+are not supported either.
+
+Example
+--------
+// Make a deep copy of any object or array that can be JSON-serialized
+function deepcopy(o) { return JSON.parse(JSON.stringify(o)); }
+
+=================================================
+JSON.parse() ECMAScript 5
+-------------------------
+parse a JSON-formatted string
+
+Synopsis
+--------
+JSON.parse(s)
+JSON.parse(s, reviver)
+
+Arguments
+---------
+s
+  The string to be parsed
+reviver
+  An optional function that can transform parsed values.
+
+Returns
+--------
+An object, array, or primitive value parsed from s (and optionally modified by reviver).
+
+Description
+-----------
+JSON.parse() is a global function for parsing JSON-formatted strings. Typically, you pass a
+single string argument and JSON.parse() returns the JavaScript value that the string represents.
+You can use the optional reviver argument to filter or post-process the parsed value before
+it is returned. If it is specified, the reviver function is invoked once for each primitive value
+(but not the objects or arrays that contain those primitive values) parsed from s. reviver is
+invoked with two arguments. The first is a property name—either an object property name
+or an array index converted to a string. The second argument is the primitive value of that
+object property or array element. reviver is invoked as a method of the object or array that
+contains the primitive value. As a special case, if the string s represents a primitive value rather
+than the more typical object or array, then that primitive value will be stored in a newly-created
+object using a property whose name is the empty string. In this case, reviver will be invoked
+once on that newly created object, with an empty string as its first argument and the primitive
+value as its second.
+The return value of the reviver function becomes the new value of the named property. If
+reviver returns its second argument, then the property will remain unchanged. If reviver
+returns undefined (or returns no value at all) then the named property will be deleted from
+the object or array before JSON.parse() returns to the user.
+
+========================================
+JSON.stringify() ECMAScript 5
+-----------------------------
+serialize an object, array or primitive value
+
+Synopsis
+--------
+JSON.stringify(o)
+JSON.stringify(o, filter)
+JSON.stringify(o, filter, indent)
+
+Arguments
+---------
+o
+  The object, array, or primitive value to be converted to a JSON string.
+filter
+  An optional function that can replace values before stringification, or an array that contains
+  the names of properties to be stringified.
+indent
+  An optional argument that specifies an indentation string or the number of spaces to use
+  for indentation when formatted human-readable output is desired. If omitted, the returned
+  string contains no extraneous spaces and is machine-readable, but not easily
+  human-readable.
+
+Returns
+-------
+A JSON-formatted string representing the value o, as filtered by filter and formatted according
+to indent.
+
+Examples
+---------
+
+// Basic serialization
+var text = JSON.stringify(data);
+
+// Specify exactly what fields to serialize
+var text = JSON.stringify(address, ["city","state","country"]);
+
+// Specify a replacer function so that RegExp objects can be serialized
+var text = JSON.stringify(patterns, function(key, value) {
+  if (value.constructor === RegExp) return value.toString();
+  return value;
+});
+
+// Or acheive the same replacement like this:
+RegExp.prototype.toJSON = function() { return this.toString(); }
+
+============================
+Object
+--------
+a superclass that contains features of all JavaScript objects
+
+Constructor
+-----------
+new Object()
+new Object(value)
+
+Arguments
+--------
+value
+  This optional argument specifies a primitive JavaScript value—a number, boolean, or
+  string—that is to be converted to a Number, Boolean, or String object.
+
+Returns
+-------
+If no value argument is passed, this constructor returns a newly created Object instance. If a
+primitive value argument is specified, the constructor creates and returns a Number, Boolean,
+or String object wrapper for the primitive value. When the Object() constructor is called as
+a function, without the new operator, it behaves just as it does when used with the new operator.
+
+Properties
+----------
+constructor
+  A reference to the JavaScript function that was the constructor for the object.
+
+Methods
+-------
+hasOwnProperty()
+  Checks whether an object has a locally defined (noninherited) property with a specified
+  name.
+isPrototypeOf()
+  Checks whether this object is the prototype object of a specified object.
+propertyIsEnumerable()
+  Checks whether a named property exists and would be enumerated by a for/in loop.
+toLocaleString()
+  Returns a localized string representation of the object. The default implementation of
+  this method simply calls toString(), but subclasses may override it to provide localization.
+toString()
+  Returns a string representation of the object. The implementation of this method provided
+  by the Object class is quite generic and does not provide much useful information.
+  Subclasses of Object typically override this method by defining their own toString()
+  method, which produces more useful output.
+valueOf()
+  Returns the primitive value of the object, if any. For objects of type Object, this method
+  simply returns the object itself. Subclasses of Object, such as Number and Boolean,
+  override this method to return the primitive value associated with the object.
+
+Static Methods
+--------------
+In ECMAScript 5, the Object constructor serves as a namespace for the following global
+functions:
+
+Object.create()
+Create a new object with specified prototype and properties.
+
+Object.defineProperties()
+Create or configure one or more properties of a specified object.
+
+Object.defineProperty()
+Create or configure a property of a specified object.
+
+Object.freeze()
+Make the specified object immutable.
+
+Object.getOwnPropertyDescriptor()
+Query the attributes of the specified property of the specified object.
+
+Object.getOwnPropertyNames()
+Return an array of the names of all non-inherited properties of the specified object, including
+non-enumerable properties.
+
+Object.getPrototypeOf()
+Return the prototype of the specified object.
+
+Object.isExtensible()
+Determine whether new properties can be added to the specified object.
+
+Object.isFrozen()
+Determine whether the specified object is frozen.
+
+Object.isSealed()
+Determine whether the specified object is sealed.
+
+Object.keys()
+Return an array of the names of the non-inherited enumerable properties of the specified
+object.
+
+Object.preventExtensions()
+Prevent the future addition of properties to the specified object.
+
+Object.seal()
+Prevent the addition of new properties and the deletion of existing properties for the
+specified object.
+
+====================================
+
+
+var myObj = Object.create(String.prototype)
+
+is the same as saying:
+
+var myObj1 = new String();
+
+
+==========================================

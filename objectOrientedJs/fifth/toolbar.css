@@ -1,0 +1,18 @@
+.toolbar {
+  height: 100px;
+  background: #ccc;
+  padding: 10px;
+}
+.toolbar-item {
+  background: #111;
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  margin-right: 6px;
+}
+.toolbar-item.active {
+  background: gold;
+}
+.toolbar-item.disabled {
+  background: #eee;
+}
