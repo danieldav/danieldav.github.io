@@ -142,3 +142,52 @@ Accessor properties Use case
   }
 };
 ==============================================================
+//page 159
+
+// Determine if o is an array-like object.
+// Strings and functions have numeric length properties, but are
+// excluded by the typeof test. In client-side JavaScript, DOM text
+// nodes have a numeric length property, and may need to be excluded
+// with an additional o.nodeType != 3 test.
+
+function isArrayLike(o) {
+  if (o && // o is not null, undefined, etc.
+  typeof o === "object" && // o is an object
+  isFinite(o.length) && // o.length is a finite number
+  o.length >= 0 && // o.length is non-negative
+  o.length===Math.floor(o.length) && // o.length is an integer
+  o.length < 4294967296) // o.length < 2^32
+    return true; // Then o is array-like
+  else
+    return false; // Otherwise it is not
+}
+====================================================
+Hoisting test - Definitive page 165
+------------------------------------
+console.log(sum1) //undefined
+//sum1(2,3); //Uncaught TypeError: sum1 is not a function(…)
+console.log(sum2); //undefined
+console.log(sum3);
+sum3(5,8); //13
+//sum4(); //if this was run it would throw: Uncaught TypeError: sum4 is not a function
+console.log(sum4); //undefined
+//sum5(); //Uncaught ReferenceError: sum5 is not defined(…) //(ie - it is not in scope)
+//sum5; // Uncaught ReferenceError: sum5 is not defined(…)
+sum6(1,2); // Uncaught TypeError: sum6 is not a function
+sum7(2,2);// Uncaught ReferenceError: sum7 is not defined(…)
+
+
+var sum1 = function(a,b) { return a+b; };
+var sum2 = (function(a,b) { return a+b; }(3,4));
+function sum3(a,b) { return a+b; };
+var sum4 = (function sum5(a,b) { return a+b; }(3,4));
+var sum6 = function sum7(a,b) { return a+b; };
+
+
+============================================
+var obj = {
+  a: 1,
+  b: 2,
+  f: function() { return this.name; },
+  m: function() { return this.a + this.b; }
+}

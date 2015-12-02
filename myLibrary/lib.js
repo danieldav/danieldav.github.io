@@ -1,5 +1,36 @@
+// from https://github.com/h5bp/Front-end-Developer-Interview-Questions#coding-questions
+//Question: How would you make this work?
 
+add(2, 5); // 7
+add(2)(5); // 7
 
+function add() {
+  if(add.length == 1) {
+    return add(arguments[0])
+  }
+}
+
+===============
+//from: https://github.com/h5bp/Front-end-Developer-Interview-Questions#coding-questions
+
+//Question: How would you make this work?
+
+//add(2, 5); // 7
+//add(2)(5); // 7
+
+//Answer:
+// See the following article on currying
+//https://medium.com/@kbrainwave/currying-in-javascript-ce6da2d324fe#.bwkweasdz
+
+var sum = function(a,b) {
+  if(b) return a+b;
+  else {
+    return function(c) {
+      return a + c;
+    }
+  }
+}
+//========================================================================
 //see http://stackoverflow.com/q/2901102/703717
 /// How to print a number with commas as thousands separators in JavaScript
 
@@ -240,6 +271,14 @@ function Pascal(n) {
 
 > ~-n
 n - 1
+============================================
+//Definitive page 164
+
+/ Print the name and value of each property of o. Return undefined.
+function printprops(o) {
+  for(var p in o)
+  console.log(p + ": " + o[p] + "\n");
+}
 =============================================
 //Find most frequent element (mode) in array
 // see also http://stackoverflow.com/questions/1053843/get-the-element-with-the-highest-occurrence-in-an-array
@@ -280,6 +319,23 @@ function mode(arr) {
          }
  }
 */
+================================================
+//Definitive Guide p157
+
+// Find all occurrences of a value x in an array a and return an array
+// of matching indexes
+function findall(a, x) {
+  var results = [], // The array of indexes we'll return
+  len = a.length, // The length of the array to be searched
+  pos = 0; // The position to search from
+  while(pos < len) { // While more elements to search...
+    pos = a.indexOf(x, pos); // Search
+    if (pos === -1) break; // If nothing found, we're done.
+    results.push(pos); // Otherwise, store index in array
+    pos = pos + 1; // And start next search at next element
+  }
+  return results; // Return array of indexes
+}
 =================================================
 //Absolute value
 function abs(x)  { return x > 0 ? x : -x; }
@@ -477,6 +533,7 @@ a.sort(function(s,t) { // Case-insensitive sort
 /* My version of the Array.reduce method */
 
 Array.prototype.myReduce = function(f,start) {
+  if(this.length == 0) { throw "myReduce: Uncaught TypeError: Reduce of empty array with no initial value"; }
   var newArr = this.slice(); // make a copy of the original array
   if(start) { newArr.splice(0,0,start)}
   while(newArr.length > 1) {
@@ -485,4 +542,32 @@ Array.prototype.myReduce = function(f,start) {
   }
   return newArr.pop();
 }
+
+/* myReduceRight */
+
+Array.prototype.myReduceRight = function(f,start) {
+  if(this.length == 0) { throw "myReduce: Uncaught TypeError: Reduce of empty array with no initial value"; }
+  var newArr = this.slice(); // make a copy of the original array
+  if(start) { newArr.splice(newArr.length,0,start)}
+  while(newArr.length > 1) {
+     newArr.splice(newArr.length-2,2,f(newArr[newArr.length-1],newArr[newArr.length-2]));
+     //console.log(newArr);
+  }
+  return newArr.pop();
+}
+
+//OR
+
+Array.prototype.myReduceRight = function(f,start) {
+  if(this.length == 0) { throw "myReduce: Uncaught TypeError: Reduce of empty array with no initial value"; }
+  var newArr = this.slice().reverse(); // make a copy of the original array
+  if(start) { newArr.splice(0,0,start)}
+  while(newArr.length > 1) {
+     newArr.splice(0,2,f(newArr[0],newArr[1]));
+     //console.log(newArr);
+  }
+  return newArr.pop();
+}
+
 ============================================================
+SOmething new;
