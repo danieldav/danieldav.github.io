@@ -1,16 +1,11 @@
-// from https://github.com/h5bp/Front-end-Developer-Interview-Questions#coding-questions
-//Question: How would you make this work?
+/*
 
-add(2, 5); // 7
-add(2)(5); // 7
+Lists of handy functions
 
-function add() {
-  if(add.length == 1) {
-    return add(arguments[0])
-  }
-}
-
-===============
+https://davidwalsh.name/essential-javascript-functions
+https://github.com/AllThingsSmitty/jquery-tips-everyone-should-know?utm_source=javascriptweekly&utm_medium=email
+*/
+================================================================================
 //from: https://github.com/h5bp/Front-end-Developer-Interview-Questions#coding-questions
 
 //Question: How would you make this work?
