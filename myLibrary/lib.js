@@ -20,11 +20,12 @@ https://github.com/AllThingsSmitty/jquery-tips-everyone-should-know?utm_source=j
 var sum = function(a,b) {
   if(b) return a+b;
   else {
-    return function(c) {
-      return a + c;
+    return function(b) {
+      return a + b;
     }
   }
 }
+
 //========================================================================
 //see http://stackoverflow.com/q/2901102/703717
 /// How to print a number with commas as thousands separators in JavaScript
@@ -87,6 +88,20 @@ function copy(o) {
 var o1 = { a: 1, b: 2 };
 var o2 = copy(o1); // o2 looks like o1 now
 ===========================================================
+//page 197
+//-------
+
+// Return the Greatest Common Divisor of two integers, using the Euclidian
+// algorithm: http://en.wikipedia.org/wiki/Euclidean_algorithm
+function gcd(a,b) { // Type checking for a and b has been omitted
+  var t; // Temporary variable for swapping values
+  if (a < b) t=b, b=a, a=t; // Ensure that a >= b
+  while(b != 0) t=b, b = a%b, a=t; // This is Euclid's algorithm for GCD
+  return a;
+}
+var gcdmemo = memoize(gcd);
+gcdmemo(85, 187) // => 17
+===========================================================
 //Simulatiing Object.create() in ECMAScript 3
 // Definitive Guide page 119
 
@@ -105,7 +120,28 @@ function inherit(p) {
   f.prototype = p; // Set its prototype property to p.
   return new f(); // Use f() to create an "heir" of p.
 }
+/*
+> var p = {x:1}
+undefined
+> var obj = inherit(p)
+undefined
+> obj.x
+1
+> p.isPrototypeOf(obj)
+true
+*/
+=========================================================
 
+
+=========================================================
+//see http://stackoverflow.com/a/9220317
+function getPrototypeLevel(obj1,obj2) {
+  //if(!(obj1 instanceof obj2)) return 0; // this works but is a little clumsy
+  if(!obj2.isPrototypeOf(obj1)) return 0;
+  return 1 + getPrototypeLevel(Object.getPrototypeOf(obj1),obj2)
+}
+
+// eg: getPrototypeLevel([1],Object.prototype) // 2
 ============================================================
 http://michalbe.blogspot.co.il/2013/03/javascript-less-known-parts-bitwise.html
 
@@ -137,7 +173,15 @@ function classof(o) {
 //> classof({x:1})
 //< "Object"
 ======================================================================
+/*
 
+Get the max number in an array
+http://stackoverflow.com/questions/1669190/javascript-min-max-array-values/30834687#30834687
+
+*/
+
+var max_of_array = Math.max.apply(Math, array);
+=======================================================================
 
 // Fibonacci without recursion - 'Iterative fibonacci'
 //see https://jsperf.com/recursive-vs-iterative-fibonacci/3
@@ -173,6 +217,25 @@ function fib(n) {
   //} else { return fib(n-1) + fib(n-2); }
   return n != 1 ? fib(n-1) + fib(n-2) : 1;
 }
+
+=============================================
+//Javascript Memoization Explanation?
+// from http://stackoverflow.com/questions/8548802/javascript-memoization-explanation
+
+// This implementation caches the results as they go.
+
+var fibonacci = (function () {
+    var memo = [0, 1];
+    var fib = function (n) {
+        var result = memo[n];
+        if (typeof result !== 'number') {
+            result = fib(n - 1) + fib(n - 2);
+            memo[n] = result;
+        }
+        return result;
+    };
+    return fib;
+}());
 ==============================================
 // Factorial without using recursion (!!) [Definitive Guide page 106]
 

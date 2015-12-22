@@ -41,7 +41,7 @@ page 15
 =======
 Scope look-up stops once it finds the first match. The same identifier
 name can be specified at multiple layers of nested scope, which is called
-“shadowing” (the inner identifer “shadows” the outer identifier). Regardless
+“shadowing” (the inner identifier “shadows” the outer identifier). Regardless
 of shadowing, scope look-up always starts at the innermost
 scope being executed at the time, and works its way outward/upward
 until the first match, and stops.
