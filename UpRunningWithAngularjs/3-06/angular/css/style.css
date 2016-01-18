@@ -1,4 +1,4 @@
-/* @override 
+/* @override
   http://planetoftheweb.com/_/css/styles.css */
 
 @import url("http://fonts.googleapis.com/css?family=Bree+Serif|Merriweather:400,300,700,900|Droid+Sans:400,700");
@@ -72,10 +72,10 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 }
 
 html {
-  background-color: #023E54; 
-  background-image: url(images/fallback-gradient.png); 
+  background-color: #023E54;
+  background-image: url(images/fallback-gradient.png);
   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#023E54), to(#10AAC0));
-  background-image: -webkit-linear-gradient(top, #023E54, #10AAC0); 
+  background-image: -webkit-linear-gradient(top, #023E54, #10AAC0);
   background-image: -moz-linear-gradient(top, #023E54, #10AAC0);
   background-image: -o-linear-gradient(top, #023E54, #10AAC0);
   min-height: 100%;
@@ -109,13 +109,13 @@ h1{
   margin-bottom: 10px;
 }
 
-h2{ 
+h2{
   font-size: 1.5rem;
   line-height: 90%;
   color: #c61c6f;
 }
 
-h3{ 
+h3{
   margin-top: 0;
   color: #bd3613;
   line-height: 110%;
@@ -250,6 +250,8 @@ a.small {
   margin: 0;
   padding: 10px 10px 0 10px;
   border-bottom: 1px dotted black;
+  opacity: .9;
+  transition: all .3s ease-out;
 }
 
 .artistlist a {
@@ -259,6 +261,8 @@ a.small {
 
 .artistlist li:hover {
   background: #FDF6E3;
+  opacity: 1;
+  transform: scale(1.2);
 }
 
 .artist img {
@@ -308,6 +312,16 @@ a.small {
   border-radius: 20px;
 }
 
-.artistinfo .btn {
+.artist.ng-enter.ng-enter-active,
+.artist.ng-leave {
+  opacity: 1;
+  height: 80px;
+  overflow: hidden;
+}
 
+.artist.ng-leave.ng-leave-active,
+.artist.ng-enter {
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
 }
