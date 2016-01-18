@@ -312,15 +312,15 @@ a.small {
   border-radius: 20px;
 }
 
-.artist.ng-enter.ng-enter-active,
-.artist.ng-leave {
+.animation.ng-enter.ng-enter-active,
+.animation.ng-leave {
   opacity: 1;
   height: 80px;
   overflow: hidden;
 }
 
-.artist.ng-leave.ng-leave-active,
-.artist.ng-enter {
+.animation.ng-leave.ng-leave-active,
+.animation.ng-enter {
   opacity: 0;
   height: 0;
   overflow: hidden;
