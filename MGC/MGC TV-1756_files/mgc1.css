@@ -1,0 +1,282 @@
+ul,
+li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+html {
+  width: 100vw;
+  height: 100vh;
+  background-image: linear-gradient(135deg, #443809 6%, #fdfa03 40%, #332904 67%, #3b310c 87%, #ffff00);
+  padding: 1.444vh 1.333vw;
+  box-sizing: border-box;
+  background-size: cover;
+}
+.bg0 {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAADCAYAAABfwxXFAAAAYklEQVQIWwFXAKj/AUW7ZP+MRHEAIf0VAMb35QCVu6QA9OXVAPYFBAABUMpa/5kzewAW+SAA3P3iAH66lwDK2M0AFggVAAEZkDz/a09AACEKJwDA4dkA2+fkAALpAQDjzuoAfcIlCmSSP+MAAAAASUVORK5CYII=");
+}
+.bg1 {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAADCAYAAABfwxXFAAAAYklEQVQIWwFXAKj/ATQ7jP8w7xYAAvsAANQF1QAECQsA+/zzAP4D+gABEVGc/yvxEQAl6A0A5gPnAPMJDAAG+uEA9wXtAAEjTaT/+x4eAAv08AD/9ewA+ecZAA334QD+BOYAr1QjoK4fCq0AAAAASUVORK5CYII=");
+}
+.bg2 {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAADCAYAAABfwxXFAAAAYklEQVQIWwFXAKj/AWzK3f9dMB4AwOHtAIp9uAAL8RcAFfnyAAPy2AABLZnK/51gLgAXBgEAWaHVAOqe5AAU/OsA//zoAAEMYsb/GzMKADMiBwDUyvQANc8EAOfjyQDi8d4AbJslpHphEhcAAAAASUVORK5CYII=");
+}
+.bg3 {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAADCAYAAABfwxXFAAAAYklEQVQIWwFXAKj/Ac6O1/8waSUA5KjjAMuV3gDh+e0A3wnpAPv+AAAByHbf/xlPDAD1zPQAw5PXAPP+9wD1CPgA8wMBAAGeMb//Agn/AAcDAwAN+xQA2OXcAAkUBQDvBAUAZWsl603XIRUAAAAASUVORK5CYII=");
+}
+.bg4 {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAADCAYAAABfwxXFAAAAYklEQVQIWwFXAKj/AbTOaf+3uNkACRMHACkTKQDUqfEA2OPlADxGMQABh59X/wsLAQALBQ0A28zuAPvxCADd2OwAVllKAAGYqUf/OjY+AOHa3wDn4v0A2Nn0AAb++AAgHSoA/iYj75jUJLMAAAAASUVORK5CYII=");
+}
+.bg5 {
+  background-image: linear-gradient(135deg, #443809 6%, #fdfa03 40%, #332904 67%, #3b310c 87%, #ffff00);
+}
+.bg6 {
+  background: none;
+}
+.bgBtn {
+  position: fixed;
+  padding: .5vw;
+  border-radius: 50%;
+  background: tomato;
+  right: 2%;
+  top: 2%;
+  color: white;
+}
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  font-family: Arial;
+}
+.bg {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+}
+.flex-container {
+  display: flex;
+}
+.flex-container:first-child {
+  margin-bottom: 4.222vh;
+}
+.flex-container:first-child .inner-flex {
+  height: 29.5vh;
+}
+.flex-container:first-child .left .inner-flex {
+  flex-direction: column;
+  justify-content: space-between;
+}
+.flex-container:last-child {
+  flex: 1;
+  height: 63.78vh;
+}
+.flex-container:last-child .right .inner-flex {
+  flex-direction: column;
+  justify-content: space-between;
+  height: 63.78vh;
+}
+.flex-container:last-child .left {
+  background: rgba(255, 255, 255, 0.3);
+}
+.left {
+  width: 50.5vw;
+  margin-right: 3.6667vw;
+}
+.right {
+  flex: 1;
+}
+header {
+  background: blue;
+  color: yellow;
+  position: relative;
+  direction: rtl;
+  padding-right: 2%;
+  height: 7.3vh;
+  line-height: 7.3vh;
+  font-size: 1.7vw;
+}
+header h1 {
+  margin: 0;
+  text-align: center;
+}
+header img {
+  width: 13.867vw;
+  height: 13.867vw;
+  border-radius: 50%;
+  position: absolute;
+  left: 2vw;
+  top: 2vw;
+}
+.inner-flex {
+  display: flex;
+}
+.play {
+  background: #FDFD01;
+  color: #008AFF;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 2vw;
+  height: 8.9vh;
+  direction: rtl;
+  line-height: 8.9vh;
+}
+.play h2 {
+  margin: 0;
+}
+.trophy {
+  fill: white;
+  margin: 0 1.5vw;
+  width: 2.3vw;
+  height: 2.3vw;
+}
+.leaderboard h2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-transform: uppercase;
+  background-color: rgba(226, 108, 18, 0.85);
+  height: 7vh;
+  font-size: 2.7vw;
+  text-align: center;
+  margin: .5vw .5vw 0 .5vw;
+  border: .1vw solid #4D4438;
+}
+.leaderboardList {
+  color: white;
+  counter-reset: count;
+  font-size: 1.9vw;
+  font-weight: bold;
+  overflow: hidden;
+  max-height: 53vh;
+}
+.leaderboardList li {
+  margin: 2vh 2.8vw 0 2.8vw;
+  height: 5.6vh;
+  line-height: 5.6vh;
+  position: relative;
+  box-sizing: border-box;
+  padding: 0 5.3vw 0 3.2vw;
+}
+.leaderboardList li:before {
+  content: counter(count) ".";
+  counter-increment: count;
+  width: 3.2vw;
+  height: 100%;
+  position: absolute;
+  left: .5vw;
+  background: #6DD0F7;
+  text-align: center;
+}
+.leaderboardList li + li:before,
+.leaderboardList li + li .lbWpr,
+.leaderboardList li + li .lbPoints {
+  background: #ABAB8D;
+}
+.leaderboardList img {
+  position: absolute;
+  left: .3vw;
+  width: 2.8vw;
+  height: 2.8vw;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+.leaderboardList .lbWpr {
+  background: #6DD0F7;
+  position: relative;
+  height: 100%;
+}
+.leaderboardList .lbName {
+  text-align: center;
+  line-height: 5.6vh;
+}
+.leaderboardList .lbPoints {
+  position: absolute;
+  right: 0;
+  width: 3.8vw;
+  text-align: center;
+  background: #6DD0F7;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  line-height: 5.6vh;
+}
+.prize .logo {
+  flex: 1;
+  position: relative;
+}
+.prize .logo img {
+  width: 11.5vw;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+.prize-img {
+  overflow: hidden;
+  position: relative;
+  background: white;
+  width: 29.8vw;
+  height: 29.5vh;
+}
+.prize-img .cycle-overlay {
+  height: 5.7vh;
+  line-height: 5.7vh;
+}
+.prize-img img {
+  max-width: 100%;
+  width: 29.8vw;
+  height: 17.88vw;
+  object-fit: cover;
+}
+.sliderprizes {
+  height: 100%;
+}
+.cycle-overlay {
+  font-family: tahoma, arial;
+  position: absolute;
+  bottom: 0;
+  height: 7.2vh;
+  line-height: 7.2vh;
+  width: 100%;
+  background: black;
+  color: white;
+  opacity: .5;
+  text-align: center;
+  font-size: 2vw;
+  text-transform: uppercase;
+  z-index: 101;
+}
+.mgcAd {
+  width: 43.333vw;
+  height: 43.222vh;
+  margin-bottom: 2.444vh;
+  overflow: hidden;
+  position: relative;
+}
+.mgcAd img {
+  max-width: 100%;
+  width: 43.333vw;
+  height: 25.9998vw;
+}
+.weburl {
+  display: table;
+  background: yellow;
+  height: 18vh;
+  color: blue;
+  font-size: 2.4vw;
+  text-align: center;
+  direction: rtl;
+}
+.weburl h2 {
+  padding: 0 3vw;
+  display: table-cell;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
