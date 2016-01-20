@@ -118,7 +118,7 @@
         <use xlink:href="#bg" />
     </svg>
     <div id="mgcMain" style="display: block;">
-      <div type="button" class="bgBtn" id="bgBtn">Bg</div>
+      <div class="bgBtn" id="bgBtn">Bg</div>
         <div class="flex-container">
             <div class="left">
                 <div class="inner-flex">
@@ -190,7 +190,7 @@
           var svg = document.getElementById('svgBg');
           var btn = document.getElementById('bgBtn');
           function changeBg() {
-              clicks = (clicks + 1) % 6;
+              clicks = (clicks + 1) % 7;
               svg.style.display = 'none';
               btn.textContent = 'Bg #' + clicks;
               html.className = 'bg' + clicks;
