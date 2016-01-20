@@ -81,7 +81,7 @@ html {
     color: white;
     z-index:1;
     border: .2vw solid white;
-    cursor: : pointer;
+    cursor: pointer;
 }
 body {
   width: 100%;
@@ -103,6 +103,7 @@ body {
   margin-bottom: @row-bottom-gutter;
   .inner-flex {
     height: @row1-height;
+    flex-direction: column;
   }
   .left .inner-flex {
     flex-direction: column;
@@ -112,6 +113,7 @@ body {
 .flex-container:last-child {
   flex:1;
   height: @row2-height;
+  margin-top: 4.27vh;
   .right .inner-flex {
     flex-direction: column;
     justify-content: space-between;
@@ -162,6 +164,7 @@ header img {
   height: @play-height;
   direction: rtl;
   line-height: @play-height;
+  margin-top: 13.4vh;
   h2 {
       margin:0;
   }

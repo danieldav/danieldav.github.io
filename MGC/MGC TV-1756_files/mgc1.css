@@ -43,7 +43,7 @@ html {
   color: white;
   z-index: 1;
   border: .2vw solid white;
-  cursor: : pointer;
+  cursor: pointer;
 }
 body {
   width: 100%;
@@ -67,6 +67,7 @@ body {
 }
 .flex-container:first-child .inner-flex {
   height: 29.5vh;
+  flex-direction: column;
 }
 .flex-container:first-child .left .inner-flex {
   flex-direction: column;
@@ -75,6 +76,7 @@ body {
 .flex-container:last-child {
   flex: 1;
   height: 63.78vh;
+  margin-top: 4.27vh;
 }
 .flex-container:last-child .right .inner-flex {
   flex-direction: column;
@@ -125,6 +127,7 @@ header img {
   height: 8.9vh;
   direction: rtl;
   line-height: 8.9vh;
+  margin-top: 13.4vh;
 }
 .play h2 {
   margin: 0;
