@@ -1,0 +1,75 @@
+.te-container {
+	width: 360px;
+	margin: 0px auto;
+	position: relative;
+	padding-bottom: 20px;
+	text-align: center;
+}
+.te-controls {
+	height: 40px;
+	position: relative;
+}
+.te-container select, a.te-next {
+	display: inline-block;
+	border: 1px solid #999;
+	padding: 5px 20px 5px 5px;
+	font-size: 15px;
+	color: #444;
+	line-height: 18px;
+	background: white;
+	cursor: pointer;
+	-webkit-box-shadow: 1px 1px 1px rgba(255,255,255,0.8);
+	-moz-box-shadow: 1px 1px 1px rgba(255,255,255,0.8);
+	box-shadow: 1px 1px 1px rgba(255,255,255,0.8);
+	text-shadow: 1px 1px 1px rgba(255,255,255,0.8);
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	font-family: "Palatino Linotype", "Palatino LT STD", Georgia, serif;
+}
+.te-container select:hover, a.te-next:hover {
+	color: #000;
+}
+.te-container select:active {
+	background: #e5e5e5;
+}
+ a.te-next {
+	margin: 5px auto;
+	padding: 5px 10px;
+	font-weight: bold;
+}
+a.te-next:active{
+	background: #e5e5e5;
+}
+.te-container select:focus{
+	outline: none;
+}
+.te-wrapper {
+	position: relative;
+	width: 329px;
+	height: 370px;
+}
+.te-cover,
+.te-transition {
+	position: absolute;
+	width: 329px;
+	height: 425px;
+	top: 0px;
+	left: 0px;
+}
+.te-cover.te-hide,
+.te-transition,
+.te-images{ display: none; }
+.te-transition.te-show { display: block; }
+.te-back,
+.te-front {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+.te-front { 
+	z-index: 2; 
+}
+.te-back {
+	z-index: 1;
+}

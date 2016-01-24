@@ -1,0 +1,42 @@
+#theArt {
+	width: 270px;
+	height: 270px;
+	position: relative;
+	margin: 0 auto 40px;
+	perspective: 1000px;
+}
+#show-buttons {
+	text-align:  center;
+}
+#cube {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	transform-style: preserve-3d;
+	transition: transform 1s;
+}
+#cube figure {
+	display: block;
+	position: absolute;
+	width: 270px;
+	height: 270px;
+	border: 2px solid black;
+}
+#cube .front {
+	transform: translateZ(136px); // (270px (width of img) + 2px (border)) / 2 = 136px
+}
+#cube .back {
+	transform: rotateX(-180deg) translateZ(136px);
+}
+#cube .right {
+	transform: rotateY(90deg) translateZ(136px);
+}
+#cube .left {
+	transform: rotateY(-90deg) translateZ(136px);
+}
+#cube .top {
+	transform: rotateX(90deg) translateZ(136px);
+}
+#cube .bottom {
+	transform: rotateX(-90deg) translateZ(136px);
+}

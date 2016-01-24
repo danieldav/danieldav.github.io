@@ -1,0 +1,52 @@
+.artGroup {
+	display:block;
+	width:200px;
+	height:182px;
+	position:relative;
+	margin-bottom:30px;
+	margin-right:20px;
+	float:left;
+}
+.artwork {
+	display:block;
+	width:100%;
+	height:100%;
+}
+.artGroup img {
+	width:100%;
+	height:100%;
+	position:absolute;
+	display:block;
+}
+.artGroup .detail {
+	display:block;
+	width:100%;
+	height:100%;
+	position:absolute;
+	background:#fff;
+}
+.artGroup .detail p {
+	font-size: 12px;
+	text-align: left;
+}
+/* older browsers */
+.artGroup.slide {
+	overflow: hidden;
+}
+.artGroup.slide .detail {
+	bottom: -364px;
+}
+/* newer browsers */
+.artGroup.flip {
+	perspective: 800px;
+}
+.artGroup.flip .artwork{
+	transition: transform 1s;
+	transform-style: preserve-3d;
+}
+.artGroup.flip .detail, .artGroup.flip .theFlip {
+	transform: rotateY(-180deg);
+}
+.artGroup.flip .detail, .artGroup.flip img {
+	backface-visibility: hidden;
+}
