@@ -1,0 +1,43 @@
+.container {
+	width: 303px;
+	height: 198px;
+	position: relative;
+	margin: 150px auto 30px;
+	perspective: 1000px;
+}
+#carousel {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	transform-style: preserve-3d;
+}
+#carousel figure {
+	display: block;
+	position: absolute;
+	width: 279px;
+	height: 174px;
+	left: 10px;
+	top: 10px;
+	line-height: 116px;
+	font-size: 80px;
+	font-weight: bold;
+	color: white;
+	text-align: center;
+}
+.ready #carousel, .ready #carousel figure {
+	transition: transform 1s;
+}
+#carousel figure img {
+	box-shadow: 0 0 0 #000;
+	transition: all 1s;
+}
+.showFig img:hover {
+	box-shadow: 3px 3px 5px #000;
+	transform: scale(2);
+}
+.no-csstransforms3d #carousel figure, .no-csstransforms3d #toggle {
+	display: none;
+}
+.no-csstransforms3d #carousel figure.showFig {
+	display: block;
+}
