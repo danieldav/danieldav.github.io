@@ -1,0 +1,36 @@
+﻿
+
+
+
+Archive_css_3.4
+2016019-Archive_css_3.4.zip
+
+Deployed to: Tilt-API
+
+
+XAMPP - Port 80 in use by “Unable to open process” with PID 4! 12
+=================================================================
+
+1)Open command prompt with admin rights
+2) Run the following command: 
+
+net stop was /y
+
+
+
+Disable same origin policy in Chrome
+====================================
+
+1)Open command prompt in chrome.exe directory
+2) Run the following command:
+
+chrome.exe --user-data-dir="C:/Chrome dev session" --disable-web-security
+
+================
+
+Atom packages:
+
+atom-ternjs
+less-autocompile // out: mgc1.css, sourcemap: false, compress: false
+
+git-plus

@@ -130,6 +130,16 @@ undefined
 > p.isPrototypeOf(obj)
 true
 */
+===================================================
+//parent node selector
+//http://stackoverflow.com/questions/35129687/how-to-optimize-the-code-like-this-parentnode-parentnode-parentnode
+
+function getNthParent(elem, n) {
+    return n === 0 ? elem : getNthParent(elem.parentNode, n - 1);
+}
+
+//USAGE
+//var child = getNthParent(someElement, 4);
 =========================================================
 page 200-201
 ---------

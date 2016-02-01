@@ -1,0 +1,95 @@
+
+Hi Gabi... Shavuah Tov.
+
+Last week I wasted a lot of time trying to compile code that wasn't relevant to the project that I was supposed to do.
+
+It turns out that I was given the wrong code-base :(
+
+Vidit was trying his best to be helpful so I'm sure it was some misunderstanding.
+
+In any case, here are the latset updates:
+
+Uri sent me a mock-up of the Jumbotron screen.
+I have put together an HTML/CSS version of the mock-up and integrated it in the code.
+
+I tried to contact Vidit to test it live so that we can debug it, but looks like I'll have to leave that for tomorrow.
+
+Have you discussed my salary with Mendel yet?
+
+It's important that I know ASAP, because if it's not realistic, then .... 
+I really have to continue finishing Javascript and Anglular ASAP
+
+I understand that some time at the end of this week or early next week you would like me to go to the stadium to test out the code on the Jumbotron.
+
+That's ok, but I will have to charge for that.... $200.
+
+If you have any info please let me know.
+
+Thanks Gabi.
+
+
+
+
+I really think that a designer should have designed the page because it looks a tad strange...
+but that's really between you and Uri. (Why did you decide to change the layout in the first place?)
+
+
+
+
+
+
+
+
+
+====================
+Hi Vidit
+
+I still haven't made any progress in running the code successfully.
+
+I have noticed that depending on which php view I try to access - the error varies.
+
+Most of the time it isn't (doesn't look like) a database related error but rather, an error related to a path configuration which it expects, but doesn't find by me.
+
+For example: at the url: http://localhost/Tilt-Web/secure-tilt/views/aboutus.php I get error:
+"
+Warning: require_once(includes/CommonIncludes.php): failed to open stream: No such file or directory in C:\xampp\htdocs\Tilt-Web\secure-tilt\views\AboutUs.php on line 2
+
+Fatal error: require_once(): Failed opening required 'includes/CommonIncludes.php' (include_path='.;C:\xampp\php\PEAR') in C:\xampp\htdocs\Tilt-Web\secure-tilt\views\AboutUs.php on line 2
+
+"
+because it looks like it is trying to access the 'includes' directory straight within the htdocs folder (or 'localhost') when it is actually located at {localhost}/Tilt-Web/{server}/includes
+
+Then, in addition, there is the database error.
+
+I watched this basic video https://www.youtube.com/watch?v=ueWpNe0PG34 just to test that I can make a connection with the tilt-web database which we created yesterday...
+
+So I made a file connect.php with the contents:
+
+<?php
+
+$user = 'root';
+$pass = '';
+$db = 'tilt-web';
+
+$db = new mysqli('localhost', $user, $pass, $db) or die("Unable to connect");
+
+echo "Great Work";
+
+?>
+
+and it seemed to work. WHe I went to url http://localhost/Tilt-Web/connect.php I get output:
+
+Great Work
+
+
+So I really do need your help in order to continue.
+
+Here are a few ideas / thoughts which might be helpful:
+
+1) Is the Tilt-web folder/project relient on some other depedencies / files (...because that's all I downloaded from github)?
+
+2) Are there any configurations/files on your end that you DON'T push to Git because they are only suitable for YOUR environment? (In which case I would need to set that up too)
+
+3) Are there any pages/views which you know are not dependent on the database or other file paths so that at least we can verify that SOMETHING is working?
+
+Thanks for your help :) 
