@@ -1,3 +1,21 @@
+/* FIZZBUZZ */
+-----------
+for(var i =1;i<=100;i++) {
+	var string = '';
+	if(i % 3 == 0) {
+		string += 'Fizz'
+	}
+	if(i % 5 == 0) {
+		string += 'Buzz';
+	}
+	if(string == '') {
+		string = i;
+	}
+	console.log(string);
+}
+=============================================================
+
+
 /*
 
 Lists of handy functions
@@ -711,4 +729,17 @@ Array.prototype.myReduceRight = function(f,start) {
 }
 
 ============================================================
-SOmething new;
+//jQuery each example
+// http://www.sitepoint.com/jquery-each-function-examples/?utm_source=javascriptweekly&utm_medium=email
+// (NB: Remember: $.each() and $(selector).each() are
+// two different methods defined in two different ways.)
+
+$('html').on('click', function (e) {
+  $('li').each(function (index) {
+    $(this).css('background-color', 'orange')
+          .delay(index * 200)
+          .fadeOut(1500);
+  });
+  e.preventDefault();
+});
+=========================================
