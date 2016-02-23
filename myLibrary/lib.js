@@ -1,3 +1,25 @@
+
+// Include jQuery in the JavaScript Console
+// http://stackoverflow.com/questions/7474354/include-jquery-in-the-javascript-console
+
+var script = document.createElement('script');
+script.src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js";
+document.getElementsByTagName('head')[0].appendChild(script);
+
+===========================================================================
+
+// Hide menu iff clicked outside menu
+// https://stackoverflow.com/questions/152975/how-to-detect-a-click-outside-an-element?answertab=votes#tab-top
+// https://css-tricks.com/dangers-stopping-event-propagation/
+
+$(document).on('click', function(event) {
+  if (!$(event.target).closest('#menucontainer').length) {
+    // Hide the menus.
+  }
+});
+
+=============================================================================
+
 /* FIZZBUZZ */
 -----------
 for(var i =1;i<=100;i++) {

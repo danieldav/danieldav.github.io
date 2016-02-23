@@ -21,6 +21,18 @@ chrome.exe --user-data-dir="C:/Chrome dev session" --disable-web-security
 Emmet
 =====
 
+(1) //p{ $}*6 //NB the whitespace seems to be necessary
+
+produces:
+
+<p> 1</p>
+<p> 2</p>
+<p> 3</p>
+<p> 4</p>
+<p> 5</p>
+<p> 6</p>
+========================================================
+
 //ul#nav>li.item$*4>a{Item $}
 
  
@@ -38,6 +50,24 @@ produces:
       
   <li class="item4"><a href="">Item 4</a></li>
     
+</ul>
+=====================================================================
+
+// ul#slideList>li{item $}*10
+
+produces:
+
+<ul id="slideList">
+  <li>item 1</li>
+  <li>item 2</li>
+  <li>item 3</li>
+  <li>item 4</li>
+  <li>item 5</li>
+  <li>item 6</li>
+  <li>item 7</li>
+  <li>item 8</li>
+  <li>item 9</li>
+  <li>item 10</li>
 </ul>
 
 =======================================================================
@@ -93,3 +123,64 @@ produces:
 “Select Next Item” (Shift+Ctrl+.) 
 “Select Previous Item” (Shift+Ctrl+,)
 “Toggle Comment” (Ctrl+/)
+
+
+
+================================================
+
+Use Browserify with Angular
+------------------------------
+
+https://blog.codecentric.de/en/2014/08/angularjs-browserify/
+
+
+npm install --save angular angular-route
+
+
+var angular = require('angular');
+
+This:
+-----
+
+...
+<script src="/app/js/service/todos.js" type="text/javascript"></script>
+<script src="/app/js/service/imprint.js" type="text/javascript"></script>
+<script src="/app/js/controller/edit_todo.js" type="text/javascript"></script>
+<script src="/app/js/controller/todo.js" type="text/javascript"></script>
+<script src="/app/js/controller/todo_list.js" type="text/javascript"></script>
+<script src="/app/js/controller/imprint.js" type="text/javascript"></script>
+<script src="/app/js/controller/footer.js" type="text/javascript"></script>
+// more script tags
+...
+
+Becomes this:
+-------------
+
+'use strict';
+ 
+var angular = require('angular');
+var app = angular.module('todoApp', [ 'ngRoute' ]);
+ 
+require('./service/todos');
+require('./service/imprint');
+require('./controller/edit_todo');
+require('./controller/todo');
+require('./controller/todo_list');
+require('./controller/imprint');
+require('./controller/footer');
+// ... more require statements, one per file
+
+
+
+Use Browserify with jQuery
+----------------------------
+
+http://rkulla.blogspot.co.il/2014/04/using-browserify-with-jquery-backbonejs.html
+
+$ npm install jquery --save
+
+var $ = require('jquery');
+
+
+
+
