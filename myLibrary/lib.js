@@ -36,8 +36,14 @@ for(var i =1;i<=100;i++) {
 	console.log(string);
 }
 =============================================================
+//http://stackoverflow.com/questions/31044/is-there-an-exists-function-for-jquery?rq=1
 
-
+Q: How can I check the existence of an element in jQuery?
+A:
+if( $(selector).length) ...
+// OR
+if( $(selector)[0]) ...
+=====================================================================
 /*
 
 Lists of handy functions
@@ -57,6 +63,7 @@ https://github.com/AllThingsSmitty/jquery-tips-everyone-should-know?utm_source=j
 // See the following article on currying
 //https://medium.com/@kbrainwave/currying-in-javascript-ce6da2d324fe#.bwkweasdz
 
+//UPDATE: http://stackoverflow.com/questions/35578297/how-to-get-the-same-result-by-using-function-and-closure-together-in-javascript
 var sum = function(a,b) {
   if(b) return a+b;
   else {
@@ -66,6 +73,11 @@ var sum = function(a,b) {
   }
 }
 
+// OR
+
+function sum(x, y){
+   return y != undefined ? x+y : function(a){return x + a}; 
+}
 //========================================================================
 //see http://stackoverflow.com/q/2901102/703717
 /// How to print a number with commas as thousands separators in JavaScript

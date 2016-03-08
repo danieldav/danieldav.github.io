@@ -1,0 +1,170 @@
+* {
+  box-sizing: border-box;
+}
+/* page layout */
+section {
+  border: 1px solid #aaa;
+  background: lightBlue;
+  padding: 10px;
+  box-sizing: border-box;
+}
+main {
+  display: flex;
+  height: 90vh;
+  margin-top: 5vh;
+}
+.search, .recent {
+  width: 30%;
+}
+button {
+  appearance: none;
+  padding:0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  &:focus {
+    outline: 0;
+  }
+}
+figure {
+  margin: 0;
+}
+/* section search */
+.search {
+  display: flex;
+  flex-direction: column;
+}
+input[type=search] {
+  border: 1px solid #aaa;
+}
+ol {
+  padding:0;
+  list-style-position: inside;
+}
+li {
+  line-height: 1.5;
+  cursor: pointer;
+}
+.controls {
+  margin-top: auto;
+  display: flex;
+}
+.btn-next {
+  margin-right: auto;
+}
+.clone {
+  position: absolute;
+  border: 1px solid tomato;
+  transition: opacity 0.2s 0.5s, left 0.5s, top 0.5s;
+  opacity: 1;
+  z-index: 1;
+  list-style: none;
+  padding-left: 16px; //to compensate for the missing list number
+}
+.icon-list, .icon-next {
+  width: 35px;
+  height: 48px;
+}
+.icon-tile {
+  width: 24px;
+  height: 24px;
+  margin-left: 10px;
+}
+.icon-list, .icon-tile {
+  &.current {
+    fill: tomato;
+  }
+}
+[class|=icon]:hover {
+  fill: tomato;
+}
+[disabled] {
+  cursor: default;
+  [class|=icon] {
+    fill: #666;
+    &:hover {
+      fill: #666;
+    }
+  }
+}
+.results {
+  img {
+    display: none;
+  }
+  &.tile {
+    li {
+      width: 15vw;
+      list-style: none;
+    }
+    li:nth-child(odd) {
+      clear: both;
+      float:left;
+    }
+    li:nth-child(even) {
+      float:right;
+    }
+    img {
+      display: block;
+      width: 70%;
+    }
+  }
+}
+main{
+  &.tile {
+    .search {
+      width: 40%;
+    }
+    .recent {
+      width: 10%;
+    }
+  }
+}
+/* section media */
+.media {
+  flex: 1;
+  margin: 0 20px;
+  position: relative;
+}
+.media-img, .audio-container {
+  //width: 90%;
+  width: 30vw;
+  height: 30vw;
+  position: absolute;
+  top:0;bottom:0;
+  left:0;right:0;
+  margin: auto;
+}
+.media-img {
+  visibility: hidden;
+  opacity:0;
+  transition: visibility 0.3s, opacity 0.3s;
+  &.fadein {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+.audio-container {
+  background: beige;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 5px solid tomato;
+}
+audio {
+  position: absolute;
+    bottom: 0;
+    left: 0; right: 0;
+    margin: auto;
+    width: 100%;
+    visibility: hidden;
+    transition: bottom .2s;
+    &.playing {
+      visibility: visible;
+      bottom: -40px;
+    }
+}
+/* section history */
+h3 {
+  font-weight: normal;
+}

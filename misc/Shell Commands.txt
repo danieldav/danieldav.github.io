@@ -8,6 +8,12 @@ XAMPP - Port 80 in use by “Unable to open process” with PID 4! 12
 net stop was /y
 
 
+OR
+
+netstat -aon | findstr :80
+
+then look at the PID on the right col and go to task viewer and end that process
+
 
 Disable same origin policy in Chrome
 ====================================
